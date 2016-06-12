@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="GodlikeStickCreator.Views.SelectDriveView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:GodlikeStickCreator.ViewModels"
+             d:DataContext="{d:DesignInstance viewModels:SelectDriveViewModel}"
+             d:DesignHeight="600"
+             d:DesignWidth="1100"
+             mc:Ignorable="d">
+    <Grid>
+        <StackPanel Width="400"
+                    HorizontalAlignment="Center" Margin="0,50,0,0"
+                    Orientation="Vertical">
+            <TextBlock Text="Please select your USB drive:" />
+            <ListBox Margin="0,5,0,0"
+                     BorderThickness="0,1,0,1"
+                     ItemsSource="{Binding Drives}"
+                     SelectedItem="{Binding SelectedDrive}" />
+            <CheckBox Margin="0,10,0,0"
+                      Content="Show all drives"
+                      IsChecked="{Binding ShowAllDrives}" />
+            <TextBlock Margin="0,10,0,0"
+                       FontStyle="Italic"
+                       Foreground="#c0392b"
+                       Text="A Windows installation was found on the selected drive.">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding WindowsInstallationFound}" Value="true">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

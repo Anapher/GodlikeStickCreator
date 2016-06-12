@@ -1,0 +1,51 @@
+﻿<controls:MetroWindow x:Class="GodlikeStickCreator.MainWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:viewModels="clr-namespace:GodlikeStickCreator.ViewModels"
+                      xmlns:views="clr-namespace:GodlikeStickCreator.Views"
+                      Title="Godlike Stick Creator"
+                      Width="1100"
+                      Height="600"
+                      GlowBrush="{StaticResource AccentColorBrush}"
+                      WindowStartupLocation="CenterScreen"
+                      mc:Ignorable="d">
+    <Window.DataContext>
+        <viewModels:MainViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <views:ViewManager x:Key="ViewManager" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <controls:TransitioningContentControl Content="{Binding CurrentView,
+                                                                Converter={StaticResource ViewManager}}"
+                                              RestartTransitionOnContentChange="True"
+                                              Transition="LeftReplace" />
+        <Border Grid.Row="1"
+                Background="#FFFBFBFB"
+                BorderBrush="Black"
+                BorderThickness="0,1,0,0"
+                SnapsToDevicePixels="True">
+            <StackPanel Margin="10"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                <Button Width="100"
+                        Command="{Binding GoBackCommand}"
+                        Content="Back"
+                        IsEnabled="{Binding CanGoBack}" />
+                <Button Width="100"
+                        Margin="10,0,0,0"
+                        Command="{Binding GoForwardCommand}"
+                        Content="Continue"
+                        IsEnabled="{Binding CanGoForward}" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</controls:MetroWindow>

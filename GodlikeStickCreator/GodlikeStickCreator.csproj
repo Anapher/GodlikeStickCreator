@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CBB4C468-AE2F-4C35-BFDF-AD5DA296D8E9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GodlikeStickCreator</RootNamespace>
+    <AssemblyName>GodlikeStickCreator</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=1.2.4.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.2.4.0\lib\net45\MahApps.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.2.4.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Controls\LogControl.xaml.cs">
+      <DependentUpon>LogControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Logger.cs" />
+    <Compile Include="Converter\EnumToDescriptionConverter.cs" />
+    <Compile Include="Core\Applications\ApplicationInfo.cs" />
+    <Compile Include="Core\Config\BootStickConfig.cs" />
+    <Compile Include="Core\System\InstallerInfo.cs" />
+    <Compile Include="Core\System\Installer\DefaultInstaller.cs" />
+    <Compile Include="Core\System\Installer\KasperskyRescueDiskInstaller.cs" />
+    <Compile Include="Core\System\Installer\KonBootPurchased.cs" />
+    <Compile Include="Core\System\Installer\Memtest86.cs" />
+    <Compile Include="Core\System\SystemInfo.cs" />
+    <Compile Include="Core\System\SystemProgressReporter.cs" />
+    <Compile Include="Core\UsbStickSettings.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\FixedColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ImageGridViewColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\LayoutColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ListViewLayoutManager.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ProportionalColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\RangeColumn.cs" />
+    <Compile Include="Utilities\EnumUtilities.cs" />
+    <Compile Include="Utilities\FileExtensions.cs" />
+    <Compile Include="Utilities\UsbNotification.cs" />
+    <Compile Include="Utilities\WpfUtilities.cs" />
+    <Compile Include="ViewModelBase\PropertyChangedBase.cs" />
+    <Compile Include="ViewModelBase\RelayCommand.cs" />
+    <Compile Include="ViewModels\ApplicationsViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\ProcessViewModel.cs" />
+    <Compile Include="ViewModels\SelectDriveViewModel.cs" />
+    <Compile Include="ViewModels\SystemsViewModel.cs" />
+    <Compile Include="ViewModels\View.cs" />
+    <Compile Include="Views\ApplicationsView.xaml.cs">
+      <DependentUpon>ApplicationsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProcessView.xaml.cs">
+      <DependentUpon>ProcessView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectDriveView.xaml.cs">
+      <DependentUpon>SelectDriveView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SystemsView.xaml.cs">
+      <DependentUpon>SystemsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ViewManager.cs" />
+    <Page Include="Controls\LogControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\BootStickCreator.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Resources\VectorGraphics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ApplicationsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProcessView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SelectDriveView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SystemsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\Systems\Kaspersky\kav.cfg" />
+    <Resource Include="Resources\SysLinuxFiles\chain.c32" />
+    <Resource Include="Resources\SysLinuxFiles\libcom32.c32" />
+    <Resource Include="Resources\SysLinuxFiles\libutil.c32" />
+    <Resource Include="Resources\SysLinuxFiles\memdisk" />
+    <Resource Include="Resources\SysLinuxFiles\menu.c32" />
+    <Resource Include="Resources\SysLinuxFiles\vesamenu.c32" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Utilities\syslinux.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SysLinuxFiles\grub.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SysLinuxFiles\background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\KaliLinux.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\KasperskyRescueDisk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\MemTest86.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\Kodi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\Tails.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\UbuntuStudio.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\SystemRescueCd.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\RedoBackup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\DBAN.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\ntpaswd.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
