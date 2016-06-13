@@ -119,13 +119,14 @@ namespace GodlikeStickCreator.ViewModels
                         processView.Message = "Creating bootable stick";
                         await Task.Run(() => bootStickCreator.CreateBootStick(processView.Logger));
                         processView.CurrentProgress = 0.1;
-                        processView.Logger.Success("Drive plugged in");
+
+                        var installSystemPercentage = UsbStickSettings.ApplicationInfo.Any(x => x.Add) ? 0.6 : 0.9;
                         for (int i = 0; i < UsbStickSettings.Systems.Count; i++)
                         {
                             var systemInfo = UsbStickSettings.Systems[i];
                             var progressReporter = new SystemProgressReporter();
                             progressReporter.ProgressChanged +=
-                                (sender, d) => processView.CurrentProgress = 0.1 + ((0.6/ UsbStickSettings.Systems.Count)*i + (0.6/ UsbStickSettings.Systems.Count) *d);
+                                (sender, d) => processView.CurrentProgress = 0.1 + ((installSystemPercentage / UsbStickSettings.Systems.Count)*i + (installSystemPercentage / UsbStickSettings.Systems.Count) *d);
                             progressReporter.MessageChanged +=
                                 (sender, s) =>
                                 {

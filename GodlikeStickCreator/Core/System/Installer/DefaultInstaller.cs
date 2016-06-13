@@ -9,7 +9,7 @@ namespace GodlikeStickCreator.Core.System.Installer
     {
         public override InstallMethod InstallMethod { get; } = InstallMethod.Other;
 
-        public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out string menuItem, SystemProgressReporter progressReporter)
+        public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out MenuItemInfo menuItem, SystemProgressReporter progressReporter)
         {
             progressReporter.ReportStatus(InstallationStatus.ExtractZipFile);
 
@@ -21,7 +21,7 @@ namespace GodlikeStickCreator.Core.System.Installer
                     {
                         Progress = (sender, args) =>
                         {
-                            progressReporter.ReportProgress(args.PercentComplete);
+                            progressReporter.ReportProgress(args.PercentComplete / 100);
                             progressReporter.SetMessage($"{args.Name} ({args.Processed} / {args.Target})");
                         }
                     });
@@ -33,24 +33,16 @@ namespace GodlikeStickCreator.Core.System.Installer
             {
                 using (var file = new SevenZipExtractor(filename))
                 {
-                    file.Extracting += (sender, args) => { progressReporter.ReportProgress(args.PercentDone / 100d); };
+                    file.Extracting += (sender, args) => { progressReporter.ReportProgress(args.PercentDone/100d); };
                     file.ExtractArchive(systemDirectory.FullName);
                 }
             }
 
             progressReporter.ReportStatus(InstallationStatus.WriteConfig);
             var configInfo = GetSystemBootInfo(systemDirectory.FullName);
-            menuItem =
-                $@"#start {Path.GetFileNameWithoutExtension(filename)}
-LABEL {systemName}
-MENU LABEL {systemName}
-MENU INDENT 1
-CONFIG /multiboot/{systemDirectory
-                    .Name}/{configInfo.ConfigPath}/{configInfo.ConfigFile}
-APPEND /multiboot/{systemDirectory.Name}/{configInfo
-                        .ConfigPath}
-#end {Path.GetFileNameWithoutExtension(filename)}";
-
+            menuItem = new MenuItemInfo(
+                $@"CONFIG /{Path.Combine("multiboot", systemDirectory.Name, configInfo.ConfigPath, configInfo.ConfigFile).Replace('\\', '/')}
+APPEND /multiboot/{systemDirectory.Name}/{configInfo.ConfigPath}");
 
             //For Ubuntu Desktop and derivatives
             ReplaceStringInFile(Path.Combine(systemDirectory.FullName, "isolinux\\txt.cfg"),
@@ -252,6 +244,57 @@ APPEND /multiboot/{systemDirectory.Name}/{configInfo
                         {"MENU BACKGROUND /boot/", $"MENU BACKGROUND /multiboot/{systemDirectory.Name}/boot/"},
                         {"APPEND initrd=/opt/media", $"APPEND initrd=/multiboot/{systemDirectory.Name}/opt/media"},
                     });
+
+            //Panda Safe CD, Tails
+            ReplaceStringInFile(Path.Combine(systemDirectory.FullName, Path.Combine(configInfo.ConfigPath.Replace('/', '\\'), "live.cfg")),
+                new Dictionary<string, string>
+                {
+                    {"kernel /live", $"kernel /multiboot/{systemDirectory.Name}/live"},
+                    {"initrd=/live", $"initrd=/multiboot/{systemDirectory.Name}/live"},
+                    {
+                        "append initrd=", $"append noprompt live-media-path=/multiboot/{systemDirectory.Name}/live initrd="
+                    }
+                });
+            ReplaceStringInFile(Path.Combine(systemDirectory.FullName, Path.Combine(configInfo.ConfigPath.Replace('/', '\\'), "live486.cfg")), //Tails Specific 486
+                new Dictionary<string, string>
+                {
+                    {"kernel /live", $"kernel /multiboot/{systemDirectory.Name}/live"},
+                    {"initrd=/live", $"initrd=/multiboot/{systemDirectory.Name}/live"},
+                    {
+                        "append initrd=", $"append noprompt live-media-path=/multiboot/{systemDirectory.Name}/live initrd="
+                    }
+                });
+            ReplaceStringInFile(Path.Combine(systemDirectory.FullName, Path.Combine(configInfo.ConfigPath.Replace('/', '\\'), "live686.cfg")), //Tails Specific
+                new Dictionary<string, string>
+                {
+                    {"kernel /live", $"kernel /multiboot/{systemDirectory.Name}/live"},
+                    {"initrd=/live", $"initrd=/multiboot/{systemDirectory.Name}/live"},
+                    {
+                        "append initrd=", $"append noprompt live-media-path=/multiboot/{systemDirectory.Name}/live initrd="
+                    }
+                });
+            ReplaceStringInFile(Path.Combine(systemDirectory.FullName, Path.Combine(configInfo.ConfigPath.Replace('/', '\\'), configInfo.ConfigFile)),
+                new Dictionary<string, string>
+                {
+                    {
+                        "default /isolinux/vesamenu.c32",
+                        $"default /multiboot/{systemDirectory.Name}/isolinux/vesamenu.c32"
+                    }
+                });
+            ReplaceStringInFile(Path.Combine(systemDirectory.FullName, Path.Combine(configInfo.ConfigPath.Replace('/', '\\'), "stdmenu.cfg")),
+                new Dictionary<string, string>
+                {
+                    {"menu background /isolinux", $"menu background /multiboot/{systemDirectory.Name}/isolinux"},
+                });
+            ReplaceStringInFile(Path.Combine(systemDirectory.FullName, "isolinux\\liveamd64.cfg"), //Tails Specific
+                new Dictionary<string, string>
+                {
+                    {"kernel /live", $"kernel /multiboot/{systemDirectory.Name}/live"},
+                    {"initrd=/live", $"initrd=/multiboot/{systemDirectory.Name}/live"},
+                    {
+                        "append initrd=", $"append noprompt live-media-path=/multiboot/{systemDirectory.Name}/live initrd="
+                    }
+                });
 
             switch (specialSnowflake)
             {
