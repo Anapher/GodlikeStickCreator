@@ -29,7 +29,7 @@ namespace GodlikeStickCreator.Core.System.Installer
             
             var sysLinuxDirectory = new DirectoryInfo(Path.Combine(systemDirectory.FullName, "syslinux"));
             sysLinuxDirectory.Create();
-            WpfUtilities.WriteResourceToFile(new Uri("pack://application:,,,/GodlikeStickCreator/Resources/SysLinuxFiles/vesamenu.c32"),
+            WpfUtilities.WriteResourceToFile(new Uri("pack://application:,,,/Resources/SysLinuxFiles/vesamenu.c32"),
                         Path.Combine(sysLinuxDirectory.FullName, "vesamenu.c32"));
             var configFile =
                 string.Format(@"menu title Kaspersky Rescue Disk (Antivirus Scanner) Boot Menu

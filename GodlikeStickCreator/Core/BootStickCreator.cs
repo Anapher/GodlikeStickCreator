@@ -66,7 +66,7 @@ namespace GodlikeStickCreator.Core
             string menuItem;
             installer.Install(systemDirectory, systemInfo.Name, systemInfo.SpecialSnowflake, systemInfo.Filename, out menuItem, systemProgressReporter);
             
-            File.AppendAllText(configFile.FullName, "\r\n" + menuItem);
+            File.AppendAllText(configFile.FullName, "\r\n" + menuItem + "\r\n");
         }
 
         private FileInfo GetConfigFileFromCategory(Category category)
@@ -113,7 +113,7 @@ namespace GodlikeStickCreator.Core
                 if (!string.IsNullOrEmpty(_bootStickConfig.ScreenBackground) && File.Exists(_bootStickConfig.ScreenBackground))
                     File.Copy(_bootStickConfig.ScreenBackground, backgroundFilePath);
                 else
-                    WpfUtilities.WriteResourceToFile(new Uri("pack://application:,,,/GodlikeStickCreator/Resources/SysLinuxFiles/background.png"), backgroundFilePath);
+                    WpfUtilities.WriteResourceToFile(new Uri("pack://application:,,,/Resources/SysLinuxFiles/background.png"), backgroundFilePath);
 
                 var randomFiles = new[] {"chain.c32", "libcom32.c32", "libutil.c32", "memdisk", "menu.c32", "vesamenu.c32"};
                 var menuDirectory = new DirectoryInfo(Path.Combine(targetDirectory.FullName, "menu"));
@@ -122,23 +122,23 @@ namespace GodlikeStickCreator.Core
                 {
                     logger.Status($"Write \"{Path.Combine(targetDirectory.FullName, randomFile)}\"");
                     WpfUtilities.WriteResourceToFile(
-                        new Uri($"pack://application:,,,/GodlikeStickCreator/Resources/SysLinuxFiles/{randomFile}"),
+                        new Uri($"pack://application:,,,/Resources/SysLinuxFiles/{randomFile}"),
                         Path.Combine(targetDirectory.FullName, randomFile));
                     logger.Status($"Write \"{Path.Combine(menuDirectory.FullName, randomFile)}\"");
                     WpfUtilities.WriteResourceToFile(
-                        new Uri($"pack://application:,,,/GodlikeStickCreator/Resources/SysLinuxFiles/{randomFile}"),
+                        new Uri($"pack://application:,,,/Resources/SysLinuxFiles/{randomFile}"),
                         Path.Combine(menuDirectory.FullName, randomFile));
                 }
 
                 logger.Status($"Write \"{Path.Combine(targetDirectory.FullName, "grub.exe")}\"");
                 WpfUtilities.WriteResourceToFile(
-                        new Uri("pack://application:,,,/GodlikeStickCreator/Resources/SysLinuxFiles/grub.exe"),
+                        new Uri("pack://application:,,,/Resources/SysLinuxFiles/grub.exe"),
                         Path.Combine(targetDirectory.FullName, "grub.exe"));
             }
             finally
             {
                 logger.Status("Delete temp directory");
-                tempDirectory.Delete();
+                tempDirectory.Delete(true);
             }
         }
 
@@ -156,21 +156,14 @@ MENU ROWS 15
 MENU TABMSGROW 20
 MENU TIMEOUTROW 22
 
-MENU color disabled     1; 30; 44 #000000 #000000 std
-MENU color hotsel       30; 47   #C00000 #DDDDDD std
-MENU color scrollbar    30; 44   #000000 #000000 std
-MENU color border       30; 44   #D00000 #000000 std
-MENU color title        1; 36; 44 #66A0FF #000000 std
-MENU color sel          7; 37; 40 #000000 #FFFFFF all
-MENU color unsel        37; 44   #FFFFFF #000000 std
-MENU color help         37; 40   #FFFFFF #000000 std
-MENU color timeout_msg  37; 40   #FFFFFF #000000 std
-MENU color timeout      1; 37; 40 #FFFFFF #000000 std
-MENU color tabmsg       31; 40   #FFFF00 #000000 std
-MENU color screen       37; 40   #000000 #000000 std
+menu color title 1;36;44 #66A0FF #00000000 none
+menu color hotsel 30;47 #2980b9 #DDDDDDDD
+menu color sel 30;47 #000000 #FFFFFFFF
+menu color border 30;44	#2980b9 #00000000 std
+menu color scrollbar 30;44 #DDDDDDDD #00000000 none
   
 LABEL < --Back to Main Menu
-CONFIG / multiboot / syslinux.cfg
+CONFIG /{DriveDirectory}/syslinux.cfg
 MENU SEPARATOR
  ";
             File.WriteAllText(filename, configString);
@@ -209,7 +202,7 @@ MENU DEFAULT";
             var appendToConfigString = $@"{"\r\n"}label {categoryName}
 menu label {categoryName} ->
 MENU INDENT 1
-CONFIG /multiboot/menu/{categoryFile}
+CONFIG /{DriveDirectory}/menu/{categoryFile}
 ";
             File.AppendAllText(Path.Combine(directory.FullName, "syslinux.cfg"), appendToConfigString);
         }
@@ -218,7 +211,7 @@ CONFIG /multiboot/menu/{categoryFile}
         {
             var sysLinuxFile = new FileInfo(Path.Combine(tempDirectory.FullName, "syslinux.exe"));
 
-            var resource = Application.GetResourceStream(new Uri("pack://application:,,,/GodlikeStickCreator/Resources/Utilities/syslinux.exe"));
+            var resource = Application.GetResourceStream(new Uri("pack://application:,,,/Resources/Utilities/syslinux.exe"));
             if (resource == null)
                 throw new FileNotFoundException();
 
@@ -230,7 +223,12 @@ CONFIG /multiboot/menu/{categoryFile}
             {
                 StartInfo =
                 {
-                    FileName = tempDirectory.FullName, Arguments = $"-maf -d /multiboot {drive.Name.Substring(0, drive.Name.Length - 2)}", RedirectStandardOutput = true, RedirectStandardError = true, CreateNoWindow = true, UseShellExecute = false
+                    FileName = sysLinuxFile.FullName,
+                    Arguments = $"-maf -d /multiboot {drive.Name.Substring(0, drive.Name.Length - 1)}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    UseShellExecute = false
                 }
             };
 

@@ -4,7 +4,7 @@ using GodlikeStickCreator.ViewModelBase;
 
 namespace GodlikeStickCreator.ViewModels
 {
-    public abstract class View : PropertyChangedBase
+    public abstract class View : PropertyChangedBase, IDisposable
     {
         private bool _canGoForward = true;
 
@@ -23,6 +23,10 @@ namespace GodlikeStickCreator.ViewModels
                 if (SetProperty(value, ref _canGoForward))
                     GoForwardChanged?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        public virtual void Dispose()
+        {
         }
 
         public event EventHandler GoForwardChanged;

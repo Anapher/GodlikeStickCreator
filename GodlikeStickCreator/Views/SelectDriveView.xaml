@@ -10,10 +10,12 @@
              mc:Ignorable="d">
     <Grid>
         <StackPanel Width="400"
-                    HorizontalAlignment="Center" Margin="0,50,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
                     Orientation="Vertical">
             <TextBlock Text="Please select your USB drive:" />
-            <ListBox Margin="0,5,0,0"
+            <ListBox MinHeight="200"
+                     Margin="0,5,0,0"
                      BorderThickness="0,1,0,1"
                      ItemsSource="{Binding Drives}"
                      SelectedItem="{Binding SelectedDrive}" />

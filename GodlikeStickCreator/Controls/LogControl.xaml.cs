@@ -60,19 +60,19 @@ namespace GodlikeStickCreator.Controls
                         {
                             case LogType.Status:
                                 foreground = (Brush) Application.Current.Resources["BlackBrush"];
-                                prefix = (string) Application.Current.Resources["Status"];
+                                prefix = "Status";
                                 break;
                             case LogType.Warning:
                                 foreground = new SolidColorBrush(Color.FromArgb(255, 231, 76, 60));
-                                prefix = (string) Application.Current.Resources["Warning"];
+                                prefix = "Warning";
                                 break;
                             case LogType.Error:
                                 foreground = new SolidColorBrush(Color.FromArgb(255, 192, 57, 43));
-                                prefix = (string) Application.Current.Resources["Error"];
+                                prefix = "Error";
                                 break;
                             case LogType.Success:
                                 foreground = new SolidColorBrush(Color.FromArgb(255, 39, 174, 96));
-                                prefix = (string) Application.Current.Resources["Success"];
+                                prefix = "Success";
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
