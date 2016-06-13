@@ -44,7 +44,7 @@ namespace GodlikeStickCreator.ViewModels
                     Description =
                         "MemTest86 is the original, free, stand alone memory testing software for x86 computers. ",
                     Category = Category.SystemTools,
-                    InstallMethod = InstallMethod.Other,
+                    InstallMethod = InstallMethod.Memtest86,
                     Website = "http://www.memtest86.com/",
                     DownloadUrl = "http://www.memtest86.com/downloads/memtest86-usb.zip",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/MemTest86.png", UriKind.Relative)),
@@ -152,6 +152,12 @@ namespace GodlikeStickCreator.ViewModels
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ISOs");
             Directory.CreateDirectory(path);
             IsoPath = path;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            _fileSystemWatcher.Dispose();
         }
 
         public List<SystemInfo> Systems { get; }

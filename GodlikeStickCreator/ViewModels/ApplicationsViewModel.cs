@@ -69,7 +69,7 @@ namespace GodlikeStickCreator.ViewModels
                     DownloadUrl = new Lazy<string>(GetNotepadPlusPlusDownloadLink),
                     ApplicationCategory = ApplicationCategory.Editors,
                     Description =
-                        "HxD is a carefully designed and fast hex editor which, additionally to raw disk editing and modifying of main memory (RAM), handles files of any size."
+                        "Notepad++ is a free source code editor and Notepad replacement that supports several languages."
                 },
                 new ApplicationInfo
                 {
@@ -100,18 +100,18 @@ namespace GodlikeStickCreator.ViewModels
         {
             var websiteSource = new WebClient().DownloadString(githubReleaseUrl);
             var url =
-                Regex.Match(websiteSource, @"<ul class=""release - downloads"">\s*<li>\s*<a href=""(?<url>(.+?))""")
+                Regex.Match(websiteSource, @"<ul class=""release-downloads"">\s*<li>\s*<a href=""(?<url>(.+?))""")
                     .Groups
                     ["url"].Value;
-            return githubReleaseUrl + url;
+            return "https://www.github.com" + url;
         }
 
         private static string GetFFmpegDownloadUrl(bool bit32)
         {
             var source = new WebClient().DownloadString("https://ffmpeg.zeranoe.com/builds/");
-            return "https://ffmpeg.zeranoe.com/builds/win64/shared/" +
+            return $"https://ffmpeg.zeranoe.com/builds/win{(bit32 ? "32" : "64")}/static/" +
                    Regex.Match(source,
-                       $@"<a class=""latest"" href=""\./win{(bit32 ? "32" : "64")}/shared/(?<filename>(.*?))""").Groups[
+                       $@"<a class=""latest"" href=""\./win{(bit32 ? "32" : "64")}/static/(?<filename>(.*?))""").Groups[
                            "filename"].Value;
         }
 
@@ -124,7 +124,7 @@ namespace GodlikeStickCreator.ViewModels
         private static string Get7ZipDownloadUrl()
         {
             var source = new WebClient().DownloadString("http://www.7-zip.org/download.html");
-            return "http://www.7-zip.org/" + Regex.Match(source, @"<A href=""(?<url>)"">Download<\/A>").Groups["url"].Value;
+            return "http://www.7-zip.org/" + Regex.Match(source, @"<A href=""(?<url>(.*?))-extra\.7z"">Download<\/A>").Groups["url"].Value + "-extra.7z";
         }
     }
 }

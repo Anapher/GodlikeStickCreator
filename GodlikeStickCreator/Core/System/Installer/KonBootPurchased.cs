@@ -22,7 +22,7 @@ namespace GodlikeStickCreator.Core.System.Installer
             File.Copy(Path.Combine(fileDirectory.FullName, "konbootOLD.img"),
                 Path.Combine(systemDirectory.FullName, "konbootOLD.img"));
             WpfUtilities.WriteResourceToFile(
-                new Uri("pack://application:,,,/GodlikeStickCreator/Resources/Systems/KonBoot/konboot.lst"),
+                new Uri("pack://application:,,,/Resources/Systems/KonBoot/konboot.lst"),
                 Path.Combine(systemDirectory.FullName, "konboot.lst"));
 
             progressReporter.ReportStatus(InstallationStatus.WriteConfig);

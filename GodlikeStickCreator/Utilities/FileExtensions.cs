@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace GodlikeStickCreator.Utilities
 {
@@ -21,6 +22,20 @@ namespace GodlikeStickCreator.Utilities
                     return new DirectoryInfo(path);
 
                 path = Path.Combine(dir, name + " " + i);
+            }
+        }
+
+        /// <summary>
+        ///     Get a free temp file name in form of a Guid
+        /// </summary>
+        /// <param name="extension">The extension the file should have. Example: exe (without a dot!)</param>
+        public static string GetFreeTempFileName(string extension)
+        {
+            while (true)
+            {
+                var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("B") + "." + extension);
+                if (!File.Exists(path))
+                    return path;
             }
         }
     }

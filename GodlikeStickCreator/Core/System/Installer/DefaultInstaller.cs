@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
+using SevenZip;
 
 namespace GodlikeStickCreator.Core.System.Installer
 {
@@ -12,18 +12,30 @@ namespace GodlikeStickCreator.Core.System.Installer
         public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out string menuItem, SystemProgressReporter progressReporter)
         {
             progressReporter.ReportStatus(InstallationStatus.ExtractZipFile);
-            using (var zipFilestream = File.OpenRead(filename))
+
+            if (filename.EndsWith(".zip"))
             {
-                var fastZip = new FastZip(new FastZipEvents
+                using (var zipFilestream = File.OpenRead(filename))
                 {
-                    Progress = (sender, args) =>
+                    var fastZip = new FastZip(new FastZipEvents
                     {
-                        progressReporter.ReportProgress(args.PercentComplete);
-                        progressReporter.SetMessage($"{args.Name} ({args.Processed} / {args.Target})");
-                    }
-                });
-                fastZip.ExtractZip(zipFilestream, systemDirectory.FullName, FastZip.Overwrite.Always, null, null,
-                    "-^boot$", false, true);
+                        Progress = (sender, args) =>
+                        {
+                            progressReporter.ReportProgress(args.PercentComplete);
+                            progressReporter.SetMessage($"{args.Name} ({args.Processed} / {args.Target})");
+                        }
+                    });
+                    fastZip.ExtractZip(zipFilestream, systemDirectory.FullName, FastZip.Overwrite.Always, null, null,
+                        "-^boot$", false, true);
+                }
+            }
+            else
+            {
+                using (var file = new SevenZipExtractor(filename))
+                {
+                    file.Extracting += (sender, args) => { progressReporter.ReportProgress(args.PercentDone / 100d); };
+                    file.ExtractArchive(systemDirectory.FullName);
+                }
             }
 
             progressReporter.ReportStatus(InstallationStatus.WriteConfig);

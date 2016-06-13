@@ -46,6 +46,10 @@
       <HintPath>..\packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SevenZipSharp, Version=0.64.3890.29348, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
+      <HintPath>..\packages\SevenZipSharp.0.64\lib\SevenZipSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -103,12 +107,16 @@
     <Compile Include="ViewModelBase\RelayCommand.cs" />
     <Compile Include="ViewModels\ApplicationsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\ModifyAppearanceViewModel.cs" />
     <Compile Include="ViewModels\ProcessViewModel.cs" />
     <Compile Include="ViewModels\SelectDriveViewModel.cs" />
     <Compile Include="ViewModels\SystemsViewModel.cs" />
     <Compile Include="ViewModels\View.cs" />
     <Compile Include="Views\ApplicationsView.xaml.cs">
       <DependentUpon>ApplicationsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ModifyAppearanceView.xaml.cs">
+      <DependentUpon>ModifyAppearanceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ProcessView.xaml.cs">
       <DependentUpon>ProcessView.xaml</DependentUpon>
@@ -142,6 +150,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ApplicationsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ModifyAppearanceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -231,6 +243,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Thumbnails\ntpaswd.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Utilities\7z.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

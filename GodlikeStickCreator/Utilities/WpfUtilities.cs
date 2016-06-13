@@ -8,10 +8,7 @@ namespace GodlikeStickCreator.Utilities
     {
         public static void WriteResourceToFile(Uri resourceUri, string fileName)
         {
-            var resource =
-                Application.GetResourceStream(
-                    new Uri(
-                        "pack://application:,,,/GodlikeStickCreator/Resources/Utilities/syslinux.exe"));
+            var resource = Application.GetResourceStream(resourceUri);
             if (resource == null)
                 throw new FileNotFoundException();
 

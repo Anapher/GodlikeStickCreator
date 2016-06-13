@@ -4,13 +4,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using GodlikeStickCreator.Core;
 using GodlikeStickCreator.Core.Config;
 using GodlikeStickCreator.Core.System;
 using GodlikeStickCreator.Utilities;
 using GodlikeStickCreator.ViewModelBase;
 using ICSharpCode.SharpZipLib.Zip;
+using SevenZip;
 
 namespace GodlikeStickCreator.ViewModels
 {
@@ -25,16 +28,30 @@ namespace GodlikeStickCreator.ViewModels
 
         public MainViewModel()
         {
+            var tempFolder = new DirectoryInfo(Path.Combine(Path.GetTempPath(), "5E6C58AD-D485-4904-8193-BC26FE41BB11"));
+            tempFolder.Create();
+
+            var filename = Path.Combine(tempFolder.FullName, "7z.dll");
+            WpfUtilities.WriteResourceToFile(new Uri("pack://application:,,,/Resources/Utilities/7z.dll"), Path.Combine(tempFolder.FullName, filename));
+            SevenZipExtractor.SetLibraryPath(filename);
+
             UsbStickSettings = new UsbStickSettings();
             _views = new List<View>
             {
                 new SelectDriveViewModel(UsbStickSettings),
                 new SystemsViewModel(UsbStickSettings),
+                new ModifyAppearanceViewModel(UsbStickSettings),
                 new ApplicationsViewModel(UsbStickSettings)
             };
             CurrentView = _views[0];
             _views.ForEach(view => view.GoForwardChanged += (sender, args) => RefreshCanGoForward());
             RefreshCanGoForward();
+
+            Application.Current.Exit += (sender, args) =>
+            {
+                _views.ForEach(x => x.Dispose());
+                tempFolder.Delete(true);
+            };
         }
 
         public View CurrentView
@@ -81,6 +98,8 @@ namespace GodlikeStickCreator.ViewModels
                         CanGoBack = false;
                         CanGoForward = false;
 
+                        await Task.Delay(500); //wait for the view to build up and subscribe to the logger event
+
                         processView.Logger.Status("Check if drive is still plugged in...");
                         if (!UsbStickSettings.Drive.IsReady)
                         {
@@ -99,14 +118,14 @@ namespace GodlikeStickCreator.ViewModels
                             new BootStickConfig {ScreenMessage = "Hello World", ScreenTitle = "Godlike Stick"});
                         processView.Message = "Creating bootable stick";
                         await Task.Run(() => bootStickCreator.CreateBootStick(processView.Logger));
-                        processView.CurrentProgress = 0.3;
-
+                        processView.CurrentProgress = 0.1;
+                        processView.Logger.Success("Drive plugged in");
                         for (int i = 0; i < UsbStickSettings.Systems.Count; i++)
                         {
                             var systemInfo = UsbStickSettings.Systems[i];
                             var progressReporter = new SystemProgressReporter();
                             progressReporter.ProgressChanged +=
-                                (sender, d) => processView.CurrentProgress = 0.1 + 0.6/((0.6/i + 1)*i + (0.6/i + 1)*d);
+                                (sender, d) => processView.CurrentProgress = 0.1 + ((0.6/ UsbStickSettings.Systems.Count)*i + (0.6/ UsbStickSettings.Systems.Count) *d);
                             progressReporter.MessageChanged +=
                                 (sender, s) =>
                                 {
@@ -123,7 +142,7 @@ namespace GodlikeStickCreator.ViewModels
                                             progressReporter));
                         }
 
-                        processView.CurrentProgress = 0.6;
+                        processView.CurrentProgress = 0.7;
                         processView.Logger.Success("All systems installed");
 
                         var applicationsToInstall = UsbStickSettings.ApplicationInfo.Where(x => x.Add).ToList();
@@ -135,38 +154,66 @@ namespace GodlikeStickCreator.ViewModels
 
                             var downloadUrl = await Task.Run(() => application.DownloadUrl.Value);
                             processView.Logger.Status($"Download {downloadUrl}");
-                            var tempFile = Path.GetTempFileName();
+                            var tempFile = FileExtensions.GetFreeTempFileName(new FileInfo(new Uri(downloadUrl).AbsolutePath).Extension);
                             File.Delete(tempFile);
                             var webClient = new WebClient();
                             webClient.DownloadProgressChanged +=
                                 (sender, args) =>
                                     processView.CurrentProgress =
-                                        0.1 + 0.6 + 0.3/((0.3/i + 1)*i + (0.3/i + 1)*args.BytesReceived);
-                            await webClient.DownloadFileTaskAsync(downloadUrl, downloadUrl);
+                                        0.1 + 0.6 + (0.3/applicationsToInstall.Count*i + (0.3/ applicationsToInstall.Count)*(args.ProgressPercentage / 100d));
+                            await webClient.DownloadFileTaskAsync(downloadUrl, tempFile);
 
                             processView.Logger.Success("Application downloaded successfully");
                             processView.Logger.Status("Extract zip archive");
-                            var fastZip = new FastZip();
-
+                            processView.Message =
+                                $"Install {application.Name} ({i + 1} / {applicationsToInstall.Count}): Extract";
                             var targetDirectory =
-                                new DirectoryInfo(Path.Combine(UsbStickSettings.Drive.RootDirectory.FullName, "Tools",
+                                new DirectoryInfo(Path.Combine(UsbStickSettings.Drive.RootDirectory.FullName,
+                                    "Tools",
                                     EnumUtilities.GetDescription(application.ApplicationCategory), application.Name));
                             targetDirectory.Create();
 
-                            fastZip.ExtractZip(tempFile, targetDirectory.FullName, FastZip.Overwrite.Always, null, null,
-                                null, false);
+                            if (downloadUrl.EndsWith(".zip"))
+                            {
+                                var fastZip = new FastZip();
+
+                                await
+                                    Task.Run(
+                                        () =>
+                                            fastZip.ExtractZip(tempFile, targetDirectory.FullName,
+                                                FastZip.Overwrite.Always, null,
+                                                null,
+                                                null, false));
+                            }
+                            else
+                            {
+                                using (var file = new SevenZipExtractor(tempFile))
+                                using(var autoResetEvent = new AutoResetEvent(false))
+                                {
+                                    file.ExtractionFinished += (sender, args) => autoResetEvent.Set();
+                                    file.BeginExtractArchive(targetDirectory.FullName);
+                                    await Task.Run(() => autoResetEvent.WaitOne());
+                                }
+                            }
+
+                            File.Delete(tempFile);
 
                             var entries = targetDirectory.GetFileSystemInfos();
                             if (entries.Length == 1 &&
                                 (entries[0].Attributes & FileAttributes.Directory) == FileAttributes.Directory)
                             {
                                 var directory = new DirectoryInfo(entries[0].FullName);
-                                directory.MoveTo(Path.Combine(directory.Parent.FullName, Guid.NewGuid().ToString("D"))); //in case that there's a directory with the same name
-                                foreach (var fileInfo in directory.GetFiles())
-                                    fileInfo.MoveTo(Path.Combine(targetDirectory.FullName, fileInfo.Name));
-                                foreach (var directoryInfo in directory.GetDirectories())
-                                    directoryInfo.MoveTo(Path.Combine(targetDirectory.FullName, directoryInfo.Name));
-                                directory.Delete();
+                                await Task.Run(() =>
+                                {
+                                    directory.MoveTo(Path.Combine(directory.Parent.FullName,
+                                        Guid.NewGuid().ToString("D")));
+                                        //in case that there's a directory with the same name
+                                    foreach (var fileInfo in directory.GetFiles())
+                                        fileInfo.MoveTo(Path.Combine(targetDirectory.FullName, fileInfo.Name));
+                                    foreach (var directoryInfo in directory.GetDirectories())
+                                        directoryInfo.MoveTo(Path.Combine(targetDirectory.FullName, directoryInfo.Name));
+                                    directory.Delete();
+                                });
                             }
                             processView.Logger.Success("Application successfully installed");
                         }

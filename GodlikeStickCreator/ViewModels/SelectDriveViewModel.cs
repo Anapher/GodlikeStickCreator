@@ -26,6 +26,12 @@ namespace GodlikeStickCreator.ViewModels
             CanGoForward = false;
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+            UsbNotification.UnregisterUsbDeviceNotification();
+        }
+
         public ObservableCollection<DriveInfo> Drives
         {
             get { return _drives; }
