@@ -18,6 +18,7 @@ namespace GodlikeStickCreator.Core
         private readonly BootStickConfig _bootStickConfig;
         private const string DriveDirectory = "multiboot";
         private readonly Dictionary<InstallMethod, InstallerInfo> _installer;
+        private SysLinuxConfigFile _sysLinuxConfigFile;
 
         public BootStickCreator(DriveInfo drive, BootStickConfig bootStickConfig)
         {
@@ -35,22 +36,11 @@ namespace GodlikeStickCreator.Core
 
         public void AddSystemToBootStick(SystemInfo systemInfo, Logger logger, SystemProgressReporter systemProgressReporter)
         {
-            var configFile = GetConfigFileFromCategory(systemInfo.Category);
-
-            logger.Status("Check config files");
-            if (!configFile.Exists)
-            {
-                var categoryName = EnumUtilities.GetDescription(systemInfo.Category);
-                WriteCategoryConfigFile(configFile.FullName, categoryName, _bootStickConfig);
-                AppendCategoryToSysFile(new DirectoryInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory)),
-                    categoryName, configFile.Name);
-                logger.Success("Config file created");
-            }
-            else
-                logger.Status("Config file is already existing");
+            if (_sysLinuxConfigFile == null)
+                throw new InvalidOperationException();
 
             var systemDirectory =
-                new DirectoryInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory, Path.GetFileName(systemInfo.Filename)));
+                new DirectoryInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory, Path.GetFileNameWithoutExtension(systemInfo.Filename)));
             if (systemDirectory.Exists)
                 throw new Exception("System already exists");
 
@@ -63,31 +53,15 @@ namespace GodlikeStickCreator.Core
 
             var installer = _installer[systemInfo.InstallMethod];
             logger.Status($"Install method \"{installer.InstallMethod}\" selected");
-            string menuItem;
+            MenuItemInfo menuItem;
             installer.Install(systemDirectory, systemInfo.Name, systemInfo.SpecialSnowflake, systemInfo.Filename, out menuItem, systemProgressReporter);
-            
-            File.AppendAllText(configFile.FullName, "\r\n" + menuItem + "\r\n");
-        }
 
-        private FileInfo GetConfigFileFromCategory(Category category)
-        {
-            switch (category)
-            {
-                case Category.LinuxDistributions:
-                    return new FileInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory, "menu", "linux.cfg"));
-                case Category.SystemTools:
-                    return
-                        new FileInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory, "menu", "system.cfg"));
-                case Category.AntiVirus:
-                    return
-                        new FileInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory, "menu", "antivirus.cfg"));
-                case Category.Multimedia:
-                    return new FileInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory, "menu", "multimedia.cfg"));
-                case Category.Other:
-                    return new FileInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory, "menu", "other.cfg"));
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            logger.Status("Add to config file");
+            _sysLinuxConfigFile.AddSystem(systemInfo, menuItem);
+            _sysLinuxConfigFile.Save();
+
+            logger.Status("Update syslinux");
+            UpdateSysLinux(systemDirectory);
         }
 
         public void CreateBootStick(Logger logger)
@@ -106,7 +80,11 @@ namespace GodlikeStickCreator.Core
                     InstallSysLinux(_drive, tempDirectory, logger);
 
                 logger.Status("Write syslinux config");
-                WriteSysConfigFile(targetDirectory, _bootStickConfig);
+                var sysLinuxFile = new FileInfo(Path.Combine(targetDirectory.FullName, "syslinux.cfg"));
+                if (sysLinuxFile.Exists)
+                    _sysLinuxConfigFile = SysLinuxConfigFile.OpenFile(sysLinuxFile.FullName, _bootStickConfig);
+                else
+                    _sysLinuxConfigFile = SysLinuxConfigFile.Create(sysLinuxFile.FullName, _bootStickConfig);
 
                 logger.Status("Copy background.png");
                 var backgroundFilePath = Path.Combine(targetDirectory.FullName, "background.png");
@@ -142,69 +120,32 @@ namespace GodlikeStickCreator.Core
             }
         }
 
-        private static void WriteCategoryConfigFile(string filename, string categoryName, BootStickConfig bootStickConfig)
+        private static void UpdateSysLinux(DirectoryInfo directoryInfo)
         {
-            var configString = $@"UI vesamenu.c32
-MENU TITLE {categoryName}
-# MENU BACKGROUND background.png
-MENU TABMSG {bootStickConfig.ScreenMessage}
-MENU WIDTH 72
-MENU MARGIN 10
-MENU VSHIFT 3
-MENU HSHIFT 6
-MENU ROWS 15
-MENU TABMSGROW 20
-MENU TIMEOUTROW 22
+            foreach (var file in directoryInfo.GetFiles())
+            {
+                switch (file.Name)
+                {
+                    case "chain.c32":
+                        break;
+                    case "vesamenu.c32":
+                        break;
+                    case "menu.c32":
+                        break;
+                    case "libutil.c32":
+                        break;
+                    case "libcom32.c32":
+                        break;
+                    case "ifcpu64.c32":
+                        break;
+                    default:
+                        continue;
+                }
 
-menu color title 1;36;44 #66A0FF #00000000 none
-menu color hotsel 30;47 #2980b9 #DDDDDDDD
-menu color sel 30;47 #000000 #FFFFFFFF
-menu color border 30;44	#2980b9 #00000000 std
-menu color scrollbar 30;44 #DDDDDDDD #00000000 none
-  
-LABEL < --Back to Main Menu
-CONFIG /{DriveDirectory}/syslinux.cfg
-MENU SEPARATOR
- ";
-            File.WriteAllText(filename, configString);
-        }
-
-        private static void WriteSysConfigFile(DirectoryInfo directory, BootStickConfig bootStickConfig)
-        {
-            var configString = $@"UI vesamenu.c32
-TIMEOUT 300
-MENU TITLE {bootStickConfig.ScreenTitle}
-MENU BACKGROUND background.png
-MENU TABMSG  {bootStickConfig.ScreenMessage}
-MENU WIDTH 72
-MENU MARGIN 10
-MENU VSHIFT 3
-MENU HSHIFT 6
-MENU ROWS 15
-MENU TABMSGROW 20
-MENU TIMEOUTROW 22
-menu color title 1;36;44 #66A0FF #00000000 none
-menu color hotsel 30;47 #2980b9 #DDDDDDDD
-menu color sel 30;47 #000000 #FFFFFFFF
-menu color border 30;44	#2980b9 #00000000 std
-menu color scrollbar 30;44 #DDDDDDDD #00000000 none
-
-LABEL Boot from first Hard Drive
-MENU LABEL Continue to Boot from ^First HD (default)
-KERNEL chain.c32
-APPEND hd1
-MENU DEFAULT";
-            File.WriteAllText(Path.Combine(directory.FullName, "syslinux.cfg"), configString);
-        }
-
-        private static void AppendCategoryToSysFile(DirectoryInfo directory, string categoryName, string categoryFile)
-        {
-            var appendToConfigString = $@"{"\r\n"}label {categoryName}
-menu label {categoryName} ->
-MENU INDENT 1
-CONFIG /{DriveDirectory}/menu/{categoryFile}
-";
-            File.AppendAllText(Path.Combine(directory.FullName, "syslinux.cfg"), appendToConfigString);
+                file.Delete();
+                WpfUtilities.WriteResourceToFile(
+                    new Uri($"pack://application:,,,/Resources/SysLinuxFiles/{file.Name}"), file.FullName);
+            }
         }
 
         private static void InstallSysLinux(DriveInfo drive, DirectoryInfo tempDirectory, Logger logger)
@@ -243,7 +184,6 @@ CONFIG /{DriveDirectory}/menu/{categoryFile}
             if (process.ExitCode != 0)
                 throw new Exception($"Output:\r\n{output}\r\nError:\r\n{errorOutput}");
 
-            logger.Status(output);
             logger.Success("syslinux installed successfully");
         }
     }

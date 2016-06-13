@@ -5,14 +5,18 @@ using System.Net;
 using System.Text.RegularExpressions;
 using GodlikeStickCreator.Core;
 using GodlikeStickCreator.Core.Applications;
+using GodlikeStickCreator.ViewModelBase;
 
 namespace GodlikeStickCreator.ViewModels
 {
     public class ApplicationsViewModel : View
     {
+        private RelayCommand _deselectAllCommand;
+        private RelayCommand _selectAllCommand;
+
         public ApplicationsViewModel(UsbStickSettings usbStickSettings) : base(usbStickSettings)
         {
-            Applications = new List<ApplicationInfo>(new []
+            Applications = new List<ApplicationInfo>(new[]
             {
                 new ApplicationInfo
                 {
@@ -76,14 +80,14 @@ namespace GodlikeStickCreator.ViewModels
                     Name = "MultiHasher",
                     DownloadUrl = new Lazy<string>(() => "http://hostsman.it-mate.co.uk/MultiHasher_2.8.2_win.zip"),
                     ApplicationCategory = ApplicationCategory.FileTools,
-                    Description =    "MultiHasher is a freeware file hash calculator."
+                    Description = "MultiHasher is a freeware file hash calculator."
                 },
                 new ApplicationInfo
                 {
                     Name = "7-Zip (console)",
                     DownloadUrl = new Lazy<string>(Get7ZipDownloadUrl),
                     ApplicationCategory = ApplicationCategory.FileTools,
-                    Description =  "7-Zip is a file archiver with a high compression ratio."
+                    Description = "7-Zip is a file archiver with a high compression ratio."
                 }
             }.OrderBy(x => x.Name));
 
@@ -95,6 +99,30 @@ namespace GodlikeStickCreator.ViewModels
         }
 
         public List<ApplicationInfo> Applications { get; set; }
+
+        public RelayCommand SelectAllCommand
+        {
+            get
+            {
+                return _selectAllCommand ?? (_selectAllCommand = new RelayCommand(parameter =>
+                {
+                    foreach (var applicationInfo in Applications)
+                        applicationInfo.Add = true;
+                }));
+            }
+        }
+
+        public RelayCommand DeselectAllCommand
+        {
+            get
+            {
+                return _deselectAllCommand ?? (_deselectAllCommand = new RelayCommand(parameter =>
+                {
+                    foreach (var applicationInfo in Applications)
+                        applicationInfo.Add = false;
+                }));
+            }
+        }
 
         private static string GetNewestReleaseDownloadUrl(string githubReleaseUrl)
         {
@@ -118,13 +146,16 @@ namespace GodlikeStickCreator.ViewModels
         private static string GetNotepadPlusPlusDownloadLink()
         {
             var source = new WebClient().DownloadString("https://notepad-plus-plus.org/download");
-            return "https://notepad-plus-plus.org" + Regex.Match(source, @"<a href=""(?<url>(.*?))"">Notepad\+\+ zip package").Groups["url"].Value;
+            return "https://notepad-plus-plus.org" +
+                   Regex.Match(source, @"<a href=""(?<url>(.*?))"">Notepad\+\+ zip package").Groups["url"].Value;
         }
 
         private static string Get7ZipDownloadUrl()
         {
             var source = new WebClient().DownloadString("http://www.7-zip.org/download.html");
-            return "http://www.7-zip.org/" + Regex.Match(source, @"<A href=""(?<url>(.*?))-extra\.7z"">Download<\/A>").Groups["url"].Value + "-extra.7z";
+            return "http://www.7-zip.org/" +
+                   Regex.Match(source, @"<A href=""(?<url>(.*?))-extra\.7z"">Download<\/A>").Groups["url"].Value +
+                   "-extra.7z";
         }
     }
 }

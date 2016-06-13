@@ -23,7 +23,7 @@ namespace GodlikeStickCreator.Views
                     {typeof (SelectDriveViewModel), typeof (SelectDriveView)},
                     {typeof (SystemsViewModel), typeof (SystemsView)},
                     {typeof (ApplicationsViewModel), typeof (ApplicationsView)},
-                    {typeof (ModifyAppearanceView), typeof (ModifyAppearanceView)},
+                    {typeof (ModifyAppearanceViewModel), typeof (ModifyAppearanceView)},
                     {typeof (ProcessViewModel), typeof (ProcessView)}
                 });
         }

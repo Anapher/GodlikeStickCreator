@@ -8,7 +8,7 @@ namespace GodlikeStickCreator.Core.System.Installer
     {
         public override InstallMethod InstallMethod { get; } = InstallMethod.Memtest86;
 
-        public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out string menuItem, SystemProgressReporter progressReporter)
+        public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out MenuItemInfo menuItem, SystemProgressReporter progressReporter)
         {
             FileInfo memtestFile = null;
             progressReporter.ReportStatus(InstallationStatus.ExtractZipFile);
@@ -42,14 +42,8 @@ namespace GodlikeStickCreator.Core.System.Installer
             if (memtestFile == null)
                 throw new FileNotFoundException();
 
-            var pathWithoutDrive = RemoveDriveFromPath(memtestFile.FullName);
-            var version = Path.GetFileNameWithoutExtension(memtestFile.FullName).Split('-')[1];
-            menuItem = $@"#start {memtestFile.Name}
-LABEL MemTest86+ ({version})
-MENU LABEL MemTest86+ ({version})
-MENU INDENT 1
-LINUX {pathWithoutDrive}
-#end {memtestFile.Name}";
+            var pathWithoutDrive = RemoveDriveFromPath(memtestFile.FullName).Replace('\\', '/');
+            menuItem = new MenuItemInfo($"LINUX {pathWithoutDrive}");
         }
     }
 }

@@ -8,7 +8,7 @@ namespace GodlikeStickCreator.Core.System.Installer
     {
         public override InstallMethod InstallMethod { get; } = InstallMethod.KonBootPurchased;
 
-        public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out string menuItem, SystemProgressReporter progressReporter)
+        public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out MenuItemInfo menuItem, SystemProgressReporter progressReporter)
         {
             progressReporter.ReportStatus(InstallationStatus.CopyFiles);
             var fileDirectory =
@@ -49,14 +49,8 @@ rootnoverify (fd0)";
                 konbootVersionSelectionFile);
 
             menuItem =
-                $@"#{Path.GetFileName(filename)}
-LABEL Kon-Boot
-MENU LABEL Kon-Boot
-MENU INDENT 1
-KERNEL /multiboot/grub.exe
-APPEND --config-file={pathWithoutDrive}/konboot.lst
-#end {Path
-                    .GetFileName(filename)}";
+                new MenuItemInfo($@"KERNEL /multiboot/grub.exe
+APPEND --config-file={pathWithoutDrive}/konboot.lst");
         }
     }
 }
