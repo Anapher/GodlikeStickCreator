@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using GodlikeStickCreator.Utilities;
 using ICSharpCode.SharpZipLib.Zip;
 using SevenZip;
 
@@ -12,7 +14,7 @@ namespace GodlikeStickCreator.Core.System.Installer
         public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out MenuItemInfo menuItem, SystemProgressReporter progressReporter)
         {
             progressReporter.ReportStatus(InstallationStatus.ExtractZipFile);
-
+            
             if (filename.EndsWith(".zip"))
             {
                 using (var zipFilestream = File.OpenRead(filename))
@@ -37,7 +39,7 @@ namespace GodlikeStickCreator.Core.System.Installer
                     file.ExtractArchive(systemDirectory.FullName);
                 }
             }
-
+            
             progressReporter.ReportStatus(InstallationStatus.WriteConfig);
             var configInfo = GetSystemBootInfo(systemDirectory.FullName);
             menuItem = new MenuItemInfo(
@@ -304,12 +306,11 @@ APPEND /multiboot/{systemDirectory.Name}/{configInfo.ConfigPath}");
                         {
                             {
                                 "INITRD initram.igz",
-                                $"INITRD NULL initram.igz$\r$\nAPPEND subdir=multiboot/{systemDirectory.Name}"
+                                $"INITRD NULL initram.igz\r\nAPPEND subdir=multiboot/{systemDirectory.Name}"
                             },
                             {"INITRD NULL initram.igz", "INITRD initram.igz"},
                             {"APPEND docache", $"APPEND subdir=multiboot/{systemDirectory.Name} docache"},
                             {"APPEND nomodeset", $"APPEND subdir=multiboot/{systemDirectory.Name} nomodeset"},
-                            {"APPEND video=800x600", $"APPEND subdir=multiboot/{systemDirectory.Name} video=800x600"},
                             {"APPEND video=800x600", $"APPEND subdir=multiboot/{systemDirectory.Name} video=800x600"},
                             {"APPEND root=auto", $"APPEND subdir=multiboot/{systemDirectory.Name} root=auto"},
                             {"APPEND dostartx", $"APPEND subdir=multiboot/{systemDirectory.Name} dostartx"},
@@ -322,7 +323,18 @@ APPEND /multiboot/{systemDirectory.Name}/{configInfo.ConfigPath}");
                             {"initrd=/bootdisk", $"initrd=/multiboot/{systemDirectory.Name}/bootdisk"},
                         });
                     break;
+                case SpecialSnowflake.IsoLinuxPrompt0:
+                    var isoLinuxFile = new FileInfo(Path.Combine(systemDirectory.FullName, "isolinux.cfg"));
+                    if (!isoLinuxFile.Exists)
+                        break; //not important enough to crash, it's just a comfort solution to prevent that boot shit
+
+                    var content = File.ReadAllText(isoLinuxFile.FullName);
+                    File.WriteAllText(isoLinuxFile.FullName, content.Replace("PROMPT 1", "PROMPT 0", StringComparison.OrdinalIgnoreCase));
+                    break;
             }
+
+            // Enable Casper
+            //if(File.Exists(Path.Combine(systemDirectory.FullName, "casper", "filesystem.squashfs")) && F)
         }
     }
 }

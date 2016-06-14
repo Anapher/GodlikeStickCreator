@@ -18,7 +18,9 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ListView listViewLayoutManager:ListViewLayoutManager.Enabled="true" ItemsSource="{Binding Applications}">
+        <ListView listViewLayoutManager:ListViewLayoutManager.Enabled="true"
+                  BorderThickness="0,0,0,1"
+                  ItemsSource="{Binding Applications}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="200"

@@ -21,17 +21,17 @@ namespace GodlikeStickCreator.Core.System.Installer
     LABEL LIVE
     MENU LABEL ^Run Kaspersky Rescue Disk from this USB
     kernel /multiboot/{systemDirectory.Name}/boot/rescue
-    append root=live:LABEL=MULTIBOOT live_dir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ subdir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ rootfstype=auto vga=791 init=/linuxrc loop=/multiboot/{systemDirectory.Name}/rescue/LiveOS/squashfs.img initrd=/multiboot/{systemDirectory.Name}/boot/rescue.igz kav_rescue_10_lang=en udev liveimg splash quiet doscsi nomodeset
+    append root=live:LABEL={App.DriveLabel} live_dir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ subdir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ rootfstype=auto vga=791 init=/linuxrc loop=/multiboot/{systemDirectory.Name}/rescue/LiveOS/squashfs.img initrd=/multiboot/{systemDirectory.Name}/boot/rescue.igz kav_rescue_10_lang=en udev liveimg splash quiet doscsi nomodeset
 
     label text
     menu label ^Run Kaspersky Rescue Disk - Text Mode
     kernel /multiboot/{systemDirectory.Name}/boot/rescue
-    append root=live:LABEL=MULTIBOOT live_dir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ subdir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ rootfstype=auto vga=791 init=/linuxrc loop=/multiboot/{systemDirectory.Name}/rescue/LiveOS/squashfs.img initrd=/multiboot/{systemDirectory.Name}/boot/rescue.igz kav_rescue_10_lang=en udev liveimg quiet nox kav_rescue_10shell noresume doscsi nomodeset
+    append root=live:LABEL={App.DriveLabel} live_dir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ subdir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ rootfstype=auto vga=791 init=/linuxrc loop=/multiboot/{systemDirectory.Name}/rescue/LiveOS/squashfs.img initrd=/multiboot/{systemDirectory.Name}/boot/rescue.igz kav_rescue_10_lang=en udev liveimg quiet nox kav_rescue_10shell noresume doscsi nomodeset
 
     label hwinfo
     menu label ^Run Hardware Info
     kernel /multiboot/{systemDirectory.Name}/boot/rescue
-    append root=live:LABEL=MULTIBOOT live_dir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ subdir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ rootfstype=auto vga=791 init=/linuxrc loop=/multiboot/{systemDirectory.Name}/rescue/LiveOS/squashfs.img initrd=/multiboot/{systemDirectory.Name}/boot/rescue.igz kav_rescue_10_lang=en udev liveimg quiet softlevel=boot nox hwinfo noresume doscsi nomodeset
+    append root=live:LABEL={App.DriveLabel} live_dir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ subdir=/multiboot/{systemDirectory.Name}/rescue/LiveOS/ rootfstype=auto vga=791 init=/linuxrc loop=/multiboot/{systemDirectory.Name}/rescue/LiveOS/squashfs.img initrd=/multiboot/{systemDirectory.Name}/boot/rescue.igz kav_rescue_10_lang=en udev liveimg quiet softlevel=boot nox hwinfo noresume doscsi nomodeset
 
   	MENU SEPARATOR
 
@@ -39,7 +39,6 @@ namespace GodlikeStickCreator.Core.System.Installer
 	MENU LABEL Return to Antivirus Tools
 	MENU EXIT
 MENU END", true);
-
         }
     }
 }

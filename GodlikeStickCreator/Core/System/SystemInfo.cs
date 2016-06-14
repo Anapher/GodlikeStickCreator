@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
+using GodlikeStickCreator.Annotations;
 
 namespace GodlikeStickCreator.Core.System
 {
@@ -16,7 +18,7 @@ namespace GodlikeStickCreator.Core.System
         public string DownloadUrl { get; set; }
         public BitmapImage Thumbnail { get; set; }
         public SpecialSnowflake SpecialSnowflake { get; set; }
-        public string IsoFileMatch { get; set; }
+        public Regex IsoFileMatch { get; set; }
         public string Filename { get; set; }
 
         public bool IsAdded
@@ -34,6 +36,7 @@ namespace GodlikeStickCreator.Core.System
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

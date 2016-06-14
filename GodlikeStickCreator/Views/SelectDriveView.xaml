@@ -14,7 +14,12 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Orientation="Vertical">
-            <TextBlock Text="Please select your USB drive:" />
+            <DockPanel>
+                <TextBlock VerticalAlignment="Center" Text="Please select your USB drive" />
+                <CheckBox HorizontalAlignment="Right"
+                          Content="Show all drives"
+                          IsChecked="{Binding ShowAllDrives}" />
+            </DockPanel>
             <ListView MinHeight="200"
                       Margin="0,5,0,0"
                       listViewLayoutManager:ListViewLayoutManager.Enabled="true"
@@ -37,16 +42,22 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <CheckBox Margin="0,10,0,0"
-                      Content="Show all drives"
-                      IsChecked="{Binding ShowAllDrives}" />
+            <CheckBox Margin="0,5,0,0" IsChecked="{Binding UsbStickSettings.FormatDrive}">
+                <CheckBox.Content>
+                    <TextBlock>
+                        <Run Text="Format" />
+                        <Run Text="{Binding SelectedDrive.Name,Mode=OneWay}" />
+                        <Run Text="with FAT32 (all data will be erased)" />
+                    </TextBlock>
+                </CheckBox.Content>
+            </CheckBox>
             <TextBlock Margin="0,10,0,0"
                        FontStyle="Italic"
                        Foreground="#c0392b"
                        Text="A Windows installation was found on the selected drive.">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
-                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Setter Property="Visibility" Value="Hidden" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding WindowsInstallationFound}" Value="true">
                                 <Setter Property="Visibility" Value="Visible" />

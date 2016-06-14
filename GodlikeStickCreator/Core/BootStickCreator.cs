@@ -47,10 +47,6 @@ namespace GodlikeStickCreator.Core
             logger.Status($"Create directory \"{systemDirectory.FullName}\"");
             systemDirectory.Create();
 
-            var configDirectory = new DirectoryInfo(Path.Combine(systemDirectory.FullName, "GODLIKE"));
-            logger.Status($"Create directory \"{configDirectory.FullName}\"");
-            configDirectory.Create();
-
             var installer = _installer[systemInfo.InstallMethod];
             logger.Status($"Install method \"{installer.InstallMethod}\" selected");
             MenuItemInfo menuItem;
@@ -94,18 +90,12 @@ namespace GodlikeStickCreator.Core
                     WpfUtilities.WriteResourceToFile(new Uri("pack://application:,,,/Resources/SysLinuxFiles/background.png"), backgroundFilePath);
 
                 var randomFiles = new[] {"chain.c32", "libcom32.c32", "libutil.c32", "memdisk", "menu.c32", "vesamenu.c32"};
-                var menuDirectory = new DirectoryInfo(Path.Combine(targetDirectory.FullName, "menu"));
-                menuDirectory.Create();
                 foreach (var randomFile in randomFiles)
                 {
                     logger.Status($"Write \"{Path.Combine(targetDirectory.FullName, randomFile)}\"");
                     WpfUtilities.WriteResourceToFile(
                         new Uri($"pack://application:,,,/Resources/SysLinuxFiles/{randomFile}"),
                         Path.Combine(targetDirectory.FullName, randomFile));
-                    logger.Status($"Write \"{Path.Combine(menuDirectory.FullName, randomFile)}\"");
-                    WpfUtilities.WriteResourceToFile(
-                        new Uri($"pack://application:,,,/Resources/SysLinuxFiles/{randomFile}"),
-                        Path.Combine(menuDirectory.FullName, randomFile));
                 }
 
                 logger.Status($"Write \"{Path.Combine(targetDirectory.FullName, "grub.exe")}\"");
@@ -122,7 +112,7 @@ namespace GodlikeStickCreator.Core
 
         private static void UpdateSysLinux(DirectoryInfo directoryInfo)
         {
-            foreach (var file in directoryInfo.GetFiles())
+            foreach (var file in directoryInfo.GetFiles("*", SearchOption.AllDirectories))
             {
                 switch (file.Name)
                 {

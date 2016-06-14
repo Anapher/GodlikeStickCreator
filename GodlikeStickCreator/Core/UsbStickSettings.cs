@@ -17,5 +17,6 @@ namespace GodlikeStickCreator.Core
         public List<SystemInfo> Systems { get; set; }
         public List<ApplicationInfo> ApplicationInfo { get; set; }
         public BootStickConfig BootStickConfig { get; set; }
+        public bool FormatDrive { get; set; }
     }
 }
