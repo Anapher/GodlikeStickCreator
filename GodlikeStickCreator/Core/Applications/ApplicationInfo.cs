@@ -11,6 +11,7 @@ namespace GodlikeStickCreator.Core.Applications
         public string Description { get; set; }
         public Lazy<string> DownloadUrl { get; set; }
         public ApplicationCategory ApplicationCategory { get; set; }
+        public string Extension { get; set; }
 
         public bool Add
         {

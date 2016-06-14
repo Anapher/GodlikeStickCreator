@@ -117,6 +117,7 @@
     <Compile Include="Core\System\Installer\KasperskyRescueDiskInstaller.cs" />
     <Compile Include="Core\System\Installer\KonBootPurchased.cs" />
     <Compile Include="Core\System\Installer\Memtest86.cs" />
+    <Compile Include="Core\System\SupportedSystems.cs" />
     <Compile Include="Core\System\SystemInfo.cs" />
     <Compile Include="Core\System\SystemProgressReporter.cs" />
     <Compile Include="Core\UsbStickSettings.cs" />
