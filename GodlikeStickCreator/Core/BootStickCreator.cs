@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using GodlikeStickCreator.Annotations;
 using GodlikeStickCreator.Controls;
 using GodlikeStickCreator.Core.Config;
 using GodlikeStickCreator.Core.System;
@@ -14,11 +15,10 @@ namespace GodlikeStickCreator.Core
 {
     public class BootStickCreator
     {
-        private readonly DriveInfo _drive;
-        private readonly BootStickConfig _bootStickConfig;
         private const string DriveDirectory = "multiboot";
+        private readonly BootStickConfig _bootStickConfig;
+        private readonly DriveInfo _drive;
         private readonly Dictionary<InstallMethod, InstallerInfo> _installer;
-        private SysLinuxConfigFile _sysLinuxConfigFile;
 
         public BootStickCreator(DriveInfo drive, BootStickConfig bootStickConfig)
         {
@@ -34,13 +34,17 @@ namespace GodlikeStickCreator.Core
             }.ToDictionary(x => x.InstallMethod, x => x);
         }
 
-        public void AddSystemToBootStick(SystemInfo systemInfo, Logger logger, SystemProgressReporter systemProgressReporter)
+        public SysLinuxConfigFile SysLinuxConfigFile { get; private set; }
+
+        public void AddSystemToBootStick(SystemInfo systemInfo, Logger logger,
+            SystemProgressReporter systemProgressReporter)
         {
-            if (_sysLinuxConfigFile == null)
+            if (SysLinuxConfigFile == null)
                 throw new InvalidOperationException();
 
             var systemDirectory =
-                new DirectoryInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory, Path.GetFileNameWithoutExtension(systemInfo.Filename)));
+                new DirectoryInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory,
+                    Path.GetFileNameWithoutExtension(systemInfo.Filename)));
             if (systemDirectory.Exists)
                 throw new Exception("System already exists");
 
@@ -50,14 +54,29 @@ namespace GodlikeStickCreator.Core
             var installer = _installer[systemInfo.InstallMethod];
             logger.Status($"Install method \"{installer.InstallMethod}\" selected");
             MenuItemInfo menuItem;
-            installer.Install(systemDirectory, systemInfo.Name, systemInfo.SpecialSnowflake, systemInfo.Filename, out menuItem, systemProgressReporter);
+            installer.Install(systemDirectory, systemInfo.Name, systemInfo.SpecialSnowflake, systemInfo.Filename,
+                out menuItem, systemProgressReporter);
 
             logger.Status("Add to config file");
-            _sysLinuxConfigFile.AddSystem(systemInfo, menuItem);
-            _sysLinuxConfigFile.Save();
+            SysLinuxConfigFile.AddSystem(systemInfo, menuItem, systemDirectory.Name);
+            SysLinuxConfigFile.Save();
 
             logger.Status("Update syslinux");
             UpdateSysLinux(systemDirectory);
+        }
+
+        public void RemoveSystem(SystemInfo systemInfo)
+        {
+            var directory = SysLinuxConfigFile.GetSystemDirectory(systemInfo);
+            SysLinuxConfigFile.RemoveSystem(systemInfo);
+
+            var systemDirectory =
+                new DirectoryInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory, directory));
+
+            if (!systemDirectory.Exists)
+                return;
+
+            systemDirectory.Delete(true);
         }
 
         public void CreateBootStick(Logger logger)
@@ -78,18 +97,21 @@ namespace GodlikeStickCreator.Core
                 logger.Status("Write syslinux config");
                 var sysLinuxFile = new FileInfo(Path.Combine(targetDirectory.FullName, "syslinux.cfg"));
                 if (sysLinuxFile.Exists)
-                    _sysLinuxConfigFile = SysLinuxConfigFile.OpenFile(sysLinuxFile.FullName, _bootStickConfig);
+                    SysLinuxConfigFile = SysLinuxConfigFile.OpenFile(sysLinuxFile.FullName, _bootStickConfig);
                 else
-                    _sysLinuxConfigFile = SysLinuxConfigFile.Create(sysLinuxFile.FullName, _bootStickConfig);
+                    SysLinuxConfigFile = SysLinuxConfigFile.Create(sysLinuxFile.FullName, _bootStickConfig);
 
                 logger.Status("Copy background.png");
                 var backgroundFilePath = Path.Combine(targetDirectory.FullName, "background.png");
-                if (!string.IsNullOrEmpty(_bootStickConfig.ScreenBackground) && File.Exists(_bootStickConfig.ScreenBackground))
+                if (!string.IsNullOrEmpty(_bootStickConfig.ScreenBackground) &&
+                    File.Exists(_bootStickConfig.ScreenBackground))
                     File.Copy(_bootStickConfig.ScreenBackground, backgroundFilePath);
                 else
-                    WpfUtilities.WriteResourceToFile(new Uri("pack://application:,,,/Resources/SysLinuxFiles/background.png"), backgroundFilePath);
+                    WpfUtilities.WriteResourceToFile(
+                        new Uri("pack://application:,,,/Resources/SysLinuxFiles/background.png"), backgroundFilePath);
 
-                var randomFiles = new[] {"chain.c32", "libcom32.c32", "libutil.c32", "memdisk", "menu.c32", "vesamenu.c32"};
+                var randomFiles = new[]
+                {"chain.c32", "libcom32.c32", "libutil.c32", "memdisk", "menu.c32", "vesamenu.c32"};
                 foreach (var randomFile in randomFiles)
                 {
                     logger.Status($"Write \"{Path.Combine(targetDirectory.FullName, randomFile)}\"");
@@ -100,8 +122,8 @@ namespace GodlikeStickCreator.Core
 
                 logger.Status($"Write \"{Path.Combine(targetDirectory.FullName, "grub.exe")}\"");
                 WpfUtilities.WriteResourceToFile(
-                        new Uri("pack://application:,,,/Resources/SysLinuxFiles/grub.exe"),
-                        Path.Combine(targetDirectory.FullName, "grub.exe"));
+                    new Uri("pack://application:,,,/Resources/SysLinuxFiles/grub.exe"),
+                    Path.Combine(targetDirectory.FullName, "grub.exe"));
             }
             finally
             {
@@ -142,7 +164,8 @@ namespace GodlikeStickCreator.Core
         {
             var sysLinuxFile = new FileInfo(Path.Combine(tempDirectory.FullName, "syslinux.exe"));
 
-            var resource = Application.GetResourceStream(new Uri("pack://application:,,,/Resources/Utilities/syslinux.exe"));
+            var resource =
+                Application.GetResourceStream(new Uri("pack://application:,,,/Resources/Utilities/syslinux.exe"));
             if (resource == null)
                 throw new FileNotFoundException();
 

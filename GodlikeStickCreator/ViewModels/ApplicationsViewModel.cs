@@ -88,6 +88,93 @@ namespace GodlikeStickCreator.ViewModels
                     DownloadUrl = new Lazy<string>(Get7ZipDownloadUrl),
                     ApplicationCategory = ApplicationCategory.FileTools,
                     Description = "7-Zip is a file archiver with a high compression ratio."
+                },
+                new ApplicationInfo
+                {
+                    Name ="PEStudio",
+                    DownloadUrl = new Lazy<string>(() => "https://www.winitor.com/tools/pestudio/current/pestudio.zip"),
+                    ApplicationCategory = ApplicationCategory.FileTools,
+                    Description = "pestudio is a tool that is used in many Cyber Emergency Response Teams (CERT) worldwide in order to perform malware initial assessment."
+                },
+                new ApplicationInfo
+                {
+                    Name ="CPU-Z",
+                    DownloadUrl = new Lazy<string>(() => "http://download.cpuid.com/cpu-z/cpu-z_1.76-en.zip"),
+                    ApplicationCategory = ApplicationCategory.InformationTools,
+                    Description = "CPU-Z is a freeware that gathers information on some of the main devices of your system."
+                },
+                new ApplicationInfo
+                {
+                    Name ="LaZagne",
+                    DownloadUrl = new Lazy<string>(() => GetNewestReleaseDownloadUrl("https://github.com/AlessandroZ/LaZagne/releases")),
+                    ApplicationCategory = ApplicationCategory.InformationTools,
+                    Description = "The LaZagne project is used to retrieve lots of passwords stored on a local computer from about 22 programs."
+                },
+                new ApplicationInfo
+                {
+                    Name ="NotMyFault",
+                    DownloadUrl = new Lazy<string>(() => "https://live.sysinternals.com/files/NotMyFault.zip"),
+                    ApplicationCategory = ApplicationCategory.InformationTools,
+                    Description = "The NotMyFault tool is a great way to crash Windows systems in a controlled manner to test various tools and analyze crashes."
+                },
+                new ApplicationInfo
+                {
+                    Name ="Prime95 32 Bit",
+                    DownloadUrl = new Lazy<string>(() => "http://www.mersenne.org/ftp_root/gimps/p95v289.win32.zip"),
+                    ApplicationCategory = ApplicationCategory.InformationTools,
+                    Description = "Prime95 is a small and easy to use application that allows you to find Mersenne Prime numbers designed for overclockers."
+                },
+                new ApplicationInfo
+                {
+                    Name ="Prime95 64 Bit",
+                    DownloadUrl = new Lazy<string>(() => "http://www.mersenne.org/ftp_root/gimps/p95v289.win64.zip"),
+                    ApplicationCategory = ApplicationCategory.InformationTools,
+                    Description = "Prime95 is a small and easy to use application that allows you to find Mersenne Prime numbers designed for overclockers."
+                },
+                new ApplicationInfo
+                {
+                    Name = "CoreTemp 32 Bit",
+                    DownloadUrl = new Lazy<string>(() => "http://www.alcpu.com/CoreTemp/php/download.php?id=2"),
+                    ApplicationCategory = ApplicationCategory.InformationTools,
+                    Extension = "zip",
+                    Description = "Core Temp is a compact, no fuss, small footprint, yet powerful program to monitor processor temperature and other vital information."
+                },
+                new ApplicationInfo
+                {
+                    Name = "CoreTemp 64 Bit",
+                    DownloadUrl = new Lazy<string>(() => "http://www.alcpu.com/CoreTemp/php/download.php?id=3"),
+                    ApplicationCategory = ApplicationCategory.InformationTools,
+                    Extension = "zip",
+                    Description = "Core Temp is a compact, no fuss, small footprint, yet powerful program to monitor processor temperature and other vital information."
+                },
+                new ApplicationInfo
+                {
+                    Name = "ImgBurn",
+                    DownloadUrl = new Lazy<string>(() => "http://filessjc01.dddload.net/static/Portable_ImgBurn_2.5.8.0.exe"),
+                    ApplicationCategory = ApplicationCategory.InformationTools,
+                    Extension = "7z",
+                    Description = "ImgBurn is a lightweight CD / DVD / HD DVD / Blu-ray burning application that everyone should have in their toolkit!"
+                },
+                new ApplicationInfo
+                {
+                    Name = "FileZilla",
+                    DownloadUrl = new Lazy<string>(() => "http://vorboss.dl.sourceforge.net/project/filezilla/FileZilla_Client/3.18.0/FileZilla_3.18.0_win32.zip"),
+                    ApplicationCategory = ApplicationCategory.Network,
+                    Description = "FileZilla is a cross-platform graphical FTP, SFTP, and FTPS file management tool."
+                },
+                new ApplicationInfo
+                {
+                    Name = "Putty",
+                    DownloadUrl = new Lazy<string>(() => "https://the.earth.li/~sgtatham/putty/latest/x86/putty.zip"),
+                    ApplicationCategory = ApplicationCategory.Network,
+                    Description = "PuTTY is a free implementation of SSH and Telnet."
+                },
+                new ApplicationInfo
+                {
+                    Name = "WinSCP",
+                    DownloadUrl = new Lazy<string>(GetWinSCPDownloadUrl),
+                    ApplicationCategory = ApplicationCategory.Network,
+                    Description = "WinSCP is an open source free SFTP client and FTP client for Windows."
                 }
             }.OrderBy(x => x.Name));
 
@@ -156,6 +243,12 @@ namespace GodlikeStickCreator.ViewModels
             return "http://www.7-zip.org/" +
                    Regex.Match(source, @"<A href=""(?<url>(.*?))-extra\.7z"">Download<\/A>").Groups["url"].Value +
                    "-extra.7z";
+        }
+
+        private static string GetWinSCPDownloadUrl()
+        {
+            var source = new WebClient().DownloadString("https://winscp.net/eng/download.php");
+            return "https://winscp.net" + Regex.Match(source, @"<a href=""\.\.(?<downloadUrl>(.*?))\.zip""").Groups["downloadUrl"].Value + ".zip";
         }
     }
 }

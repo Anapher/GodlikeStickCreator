@@ -13,7 +13,6 @@ using GodlikeStickCreator.Core.Config;
 using GodlikeStickCreator.Core.System;
 using GodlikeStickCreator.Utilities;
 using GodlikeStickCreator.ViewModelBase;
-using ICSharpCode.SharpZipLib.Zip;
 using SevenZip;
 
 namespace GodlikeStickCreator.ViewModels
@@ -163,7 +162,11 @@ namespace GodlikeStickCreator.ViewModels
                 FormatResponse formatResponse;
                 if (User.IsAdministrator)
                 {
-                    formatResponse = await Task.Run(() => DriveUtilities.FormatDrive(driveLetter, "FAT32", true, 8192, App.DriveLabel, false));
+                    formatResponse =
+                        await
+                            Task.Run(
+                                () =>
+                                    DriveUtilities.FormatDrive(driveLetter, "FAT32", true, 8192, App.DriveLabel, false));
                 }
                 else
                 {
@@ -226,7 +229,25 @@ namespace GodlikeStickCreator.ViewModels
                         processView.Logger.Status(s);
                     };
 
+                if (bootStickCreator.SysLinuxConfigFile.ContainsSystem(systemInfo))
+                {
+                    var directory = bootStickCreator.SysLinuxConfigFile.GetSystemDirectory(systemInfo);
+                    var newFileName = Path.GetFileNameWithoutExtension(systemInfo.Filename);
+
+                    if (directory == newFileName)
+                    {
+                        if (MessageBoxEx.Show(Application.Current.MainWindow,
+                            $"The system \"{systemInfo.Name}\" already exists on the drive. Should it be overwritten (else skip)?",
+                            systemInfo.Name + " already exists", MessageBoxButton.YesNo, MessageBoxImage.Question,
+                            MessageBoxResult.No) != MessageBoxResult.Yes)
+                            continue;
+                    }
+
+                    bootStickCreator.RemoveSystem(systemInfo);
+                }
+
                 processView.Message = $"Install {systemInfo.Name} ({i + 1} / {UsbStickSettings.Systems.Count})";
+
                 await
                     Task.Run(
                         () =>
@@ -247,7 +268,8 @@ namespace GodlikeStickCreator.ViewModels
                 var downloadUrl = await Task.Run(() => application.DownloadUrl.Value);
                 processView.Logger.Status($"Download {downloadUrl}");
                 var tempFile =
-                    FileExtensions.GetFreeTempFileName(new FileInfo(new Uri(downloadUrl).AbsolutePath).Extension);
+                    FileExtensions.GetFreeTempFileName(application.Extension ??
+                                                       new FileInfo(new Uri(downloadUrl).AbsolutePath).Extension);
                 File.Delete(tempFile);
                 var webClient = new WebClient();
                 webClient.DownloadProgressChanged +=
@@ -268,27 +290,13 @@ namespace GodlikeStickCreator.ViewModels
                         EnumUtilities.GetDescription(application.ApplicationCategory), application.Name));
                 targetDirectory.Create();
 
-                if (downloadUrl.EndsWith(".zip"))
+                using (var file = new SevenZipExtractor(tempFile))
+                using (var autoResetEvent = new AutoResetEvent(false))
                 {
-                    var fastZip = new FastZip();
+                    file.ExtractionFinished += (sender, args) => autoResetEvent.Set();
+                    file.BeginExtractArchive(targetDirectory.FullName);
+                    await Task.Run(() => autoResetEvent.WaitOne());
 
-                    await
-                        Task.Run(
-                            () =>
-                                fastZip.ExtractZip(tempFile, targetDirectory.FullName,
-                                    FastZip.Overwrite.Always, null,
-                                    null,
-                                    null, false));
-                }
-                else
-                {
-                    using (var file = new SevenZipExtractor(tempFile))
-                    using (var autoResetEvent = new AutoResetEvent(false))
-                    {
-                        file.ExtractionFinished += (sender, args) => autoResetEvent.Set();
-                        file.BeginExtractArchive(targetDirectory.FullName);
-                        await Task.Run(() => autoResetEvent.WaitOne());
-                    }
                 }
 
                 File.Delete(tempFile);

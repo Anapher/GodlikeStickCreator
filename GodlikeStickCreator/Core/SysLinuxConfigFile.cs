@@ -120,11 +120,18 @@ MENU DEFAULT";
             return _content.Contains($"# {systemInfo.Name}");
         }
 
-        public void AddSystem(SystemInfo systemInfo, MenuItemInfo menuItemInfo)
+        public string GetSystemDirectory(SystemInfo systemInfo)
+        {
+            return
+                Regex.Match(_content, $@"# <{systemInfo.Name.Replace(" ", null)} directory=""(?<directoryName>(.*?))"">")
+                    .Groups["directoryName"].Value;
+        }
+
+        public void AddSystem(SystemInfo systemInfo, MenuItemInfo menuItemInfo, string directoryName)
         {
             AppendCategoryIfNotExists(systemInfo.Category);
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"\t# <{systemInfo.Name.Replace(" ", null)}>");
+            stringBuilder.AppendLine($"\t# <{systemInfo.Name.Replace(" ", null)} directory=\"{directoryName}\">");
             if (!menuItemInfo.Raw)
             {
                 stringBuilder.AppendLine($"\t\tLABEL {systemInfo.Name}");
