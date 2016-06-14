@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using GodlikeStickCreator.Utilities;
 
 namespace GodlikeStickCreator.Core.System
 {
@@ -175,9 +177,8 @@ namespace GodlikeStickCreator.Core.System
 
             var content = File.ReadAllText(filename);
             foreach (var replacementString in replacementStrings)
-            {
-                content = content.Replace(replacementString.Key, replacementString.Value);
-            }
+                content = content.Replace(replacementString.Key, replacementString.Value,
+                    StringComparison.OrdinalIgnoreCase);
             File.WriteAllText(filename, content);
         }
 
@@ -204,6 +205,7 @@ namespace GodlikeStickCreator.Core.System
     public enum SpecialSnowflake
     {
         None,
-        SystemRescueDisk
+        SystemRescueDisk,
+        IsoLinuxPrompt0
     }
 }

@@ -12,6 +12,8 @@ namespace GodlikeStickCreator.ViewModels
     public class SelectDriveViewModel : View
     {
         private ObservableCollection<DriveInfo> _drives;
+        private bool _formatDrive;
+        private bool _formatDriveChangedByUser;
         private DriveInfo _selectedDrive;
         private bool _showAllDrives;
         private bool _windowsInstallationFound;
@@ -19,17 +21,12 @@ namespace GodlikeStickCreator.ViewModels
         public SelectDriveViewModel(UsbStickSettings usbStickSettings) : base(usbStickSettings)
         {
             Drives =
-                new ObservableCollection<DriveInfo>(DriveInfo.GetDrives().Where(x => x.DriveType == DriveType.Removable));
+                new ObservableCollection<DriveInfo>(DriveInfo.GetDrives().Where(x => x.IsReady && x.DriveType == DriveType.Removable));
             if (Drives.Count == 0)
                 ShowAllDrives = true;
             Application.Current.MainWindow.SourceInitialized += MainWindowOnSourceInitialized;
             CanGoForward = false;
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            UsbNotification.UnregisterUsbDeviceNotification();
+            _formatDrive = usbStickSettings.FormatDrive;
         }
 
         public ObservableCollection<DriveInfo> Drives
@@ -56,6 +53,25 @@ namespace GodlikeStickCreator.ViewModels
                     CanGoForward = value != null;
                     WindowsInstallationFound = false;
                     UsbStickSettings.Drive = value;
+                    if (!_formatDriveChangedByUser && value != null && value.IsReady)
+                    {
+                        _formatDrive = value.DriveFormat != "FAT32";
+                        UsbStickSettings.FormatDrive = _formatDrive;
+                        OnPropertyChanged(nameof(FormatDrive));
+                    }
+                }
+            }
+        }
+
+        public bool FormatDrive
+        {
+            get { return _formatDrive; }
+            set
+            {
+                if (SetProperty(value, ref _formatDrive))
+                {
+                    UsbStickSettings.FormatDrive = value;
+                    _formatDriveChangedByUser = true;
                 }
             }
         }
@@ -72,16 +88,26 @@ namespace GodlikeStickCreator.ViewModels
             set
             {
                 if (SetProperty(value, ref _showAllDrives))
+                {
+                    var currentItem = SelectedDrive;
                     Drives =
                         new ObservableCollection<DriveInfo>(value
-                            ? DriveInfo.GetDrives()
-                            : DriveInfo.GetDrives().Where(x => x.DriveType == DriveType.Removable));
+                            ? DriveInfo.GetDrives().Where(x => x.IsReady)
+                            : DriveInfo.GetDrives().Where(x => x.IsReady && x.DriveType == DriveType.Removable));
+                    SelectedDrive = Drives.FirstOrDefault(x => x.Name == currentItem.Name);
+                }
             }
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            UsbNotification.UnregisterUsbDeviceNotification();
         }
 
         private void MainWindowOnSourceInitialized(object sender, EventArgs eventArgs)
         {
-            HwndSource source = HwndSource.FromHwnd(new WindowInteropHelper(Application.Current.MainWindow).Handle);
+            var source = HwndSource.FromHwnd(new WindowInteropHelper(Application.Current.MainWindow).Handle);
             if (source != null)
             {
                 var windowHandle = source.Handle;

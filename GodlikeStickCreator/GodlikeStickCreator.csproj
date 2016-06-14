@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -124,10 +127,18 @@
     <Compile Include="Extensions\ListViewLayoutManager\ListViewLayoutManager.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ProportionalColumn.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\RangeColumn.cs" />
+    <Compile Include="Native\CbtHookAction.cs" />
+    <Compile Include="Native\CWPRETSTRUCT.cs" />
+    <Compile Include="Native\NativeMethods.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\ColorExtensions.cs" />
+    <Compile Include="Utilities\DriveUtilities.cs" />
     <Compile Include="Utilities\EnumUtilities.cs" />
     <Compile Include="Utilities\FileExtensions.cs" />
+    <Compile Include="Utilities\MessageBoxEx.cs" />
     <Compile Include="Utilities\UsbNotification.cs" />
+    <Compile Include="Utilities\User.cs" />
     <Compile Include="Utilities\WpfUtilities.cs" />
     <Compile Include="ViewModelBase\PropertyChangedBase.cs" />
     <Compile Include="ViewModelBase\RelayCommand.cs" />
@@ -214,6 +225,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

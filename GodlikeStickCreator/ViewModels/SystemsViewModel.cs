@@ -36,7 +36,7 @@ namespace GodlikeStickCreator.ViewModels
                     Website = "https://www.kali.org/",
                     DownloadUrl = "https://www.kali.org/downloads/",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/KaliLinux.png", UriKind.Relative)),
-                    IsoFileMatch = "^kali.*\\.iso$"
+                    IsoFileMatch = new Regex(@"^kali.*\.iso$")
                 },
                 new SystemInfo
                 {
@@ -48,7 +48,7 @@ namespace GodlikeStickCreator.ViewModels
                     Website = "http://www.memtest86.com/",
                     DownloadUrl = "http://www.memtest86.com/downloads/memtest86-usb.zip",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/MemTest86.png", UriKind.Relative)),
-                    IsoFileMatch = "^memtest86\\+-.*\\.zip$"
+                    IsoFileMatch = new Regex(@"^memtest86\+-.*\.zip$")
                 },
                 new SystemInfo
                 {
@@ -61,7 +61,7 @@ namespace GodlikeStickCreator.ViewModels
                     DownloadUrl = "https://support.kaspersky.com/us/viruses/rescuedisk",
                     Thumbnail =
                         new BitmapImage(new Uri("/Resources/Thumbnails/KasperskyRescueDisk.png", UriKind.Relative)),
-                    IsoFileMatch = @"^kav_rescue_10.iso$"
+                    IsoFileMatch = new Regex(@"^kav_rescue_10\.iso$")
                 },
                 new SystemInfo
                 {
@@ -73,7 +73,7 @@ namespace GodlikeStickCreator.ViewModels
                     Website = "http://kodi.wiki/view/kodibuntu",
                     DownloadUrl = "https://kodi.tv/download/",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/Kodi.png", UriKind.Relative)),
-                    IsoFileMatch = "^kodibuntu.*\\.iso$"
+                    IsoFileMatch = new Regex(@"^kodibuntu.*\.iso$")
                 },
                 new SystemInfo
                 {
@@ -85,7 +85,7 @@ namespace GodlikeStickCreator.ViewModels
                     Website = "https://tails.boum.org/",
                     DownloadUrl = "http://dl.amnesia.boum.org/tails/stable/",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/Tails.png", UriKind.Relative)),
-                    IsoFileMatch = "^tails.*\\.iso$"
+                    IsoFileMatch = new Regex(@"^tails.*\.iso$")
                 },
                 new SystemInfo
                 {
@@ -97,7 +97,7 @@ namespace GodlikeStickCreator.ViewModels
                     Website = "https://ubuntustudio.org/",
                     DownloadUrl = "https://ubuntustudio.org/download/",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/UbuntuStudio.png", UriKind.Relative)),
-                    IsoFileMatch = "^ubuntustudio.*\\.iso$"
+                    IsoFileMatch = new Regex(@"^ubuntustudio.*\.iso$")
                 },
                 new SystemInfo
                 {
@@ -109,7 +109,8 @@ namespace GodlikeStickCreator.ViewModels
                     Website = "https://www.system-rescue-cd.org/",
                     DownloadUrl = "https://sourceforge.net/projects/systemrescuecd/files/latest/download",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/SystemRescueCd.png", UriKind.Relative)),
-                    IsoFileMatch = "^systemrescuecd.*\\.iso$"
+                    IsoFileMatch = new Regex(@"^systemrescuecd.*\.iso$"),
+                    SpecialSnowflake = SpecialSnowflake.SystemRescueDisk
                 },
                 new SystemInfo
                 {
@@ -121,7 +122,7 @@ namespace GodlikeStickCreator.ViewModels
                     Website = "http://redobackup.org/",
                     DownloadUrl = "http://redobackup.org/download.php",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/RedoBackup.png", UriKind.Relative)),
-                    IsoFileMatch = "^redobackup-livecd.*\\.iso$"
+                    IsoFileMatch = new Regex(@"^redobackup-livecd.*\.iso$")
                 },
                 new SystemInfo
                 {
@@ -133,7 +134,8 @@ namespace GodlikeStickCreator.ViewModels
                     Website = "http://www.dban.org/",
                     DownloadUrl = "http://www.dban.org/download",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/DBAN.png", UriKind.Relative)),
-                    IsoFileMatch = "^dban.*\\.iso$"
+                    IsoFileMatch = new Regex(@"^dban.*\.iso$"),
+                    SpecialSnowflake = SpecialSnowflake.IsoLinuxPrompt0
                 },
                 new SystemInfo
                 {
@@ -145,7 +147,8 @@ namespace GodlikeStickCreator.ViewModels
                     Website = "https://pogostick.net/~pnh/ntpasswd/",
                     DownloadUrl = "https://pogostick.net/~pnh/ntpasswd/",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/ntpaswd.png", UriKind.Relative)),
-                    IsoFileMatch = "^usb.*\\.zip$"
+                    IsoFileMatch = new Regex(@"^usb.*\.zip$"),
+                    SpecialSnowflake = SpecialSnowflake.IsoLinuxPrompt0
                 }
             }.OrderBy(x => x.Name).ToList();
 
@@ -261,7 +264,7 @@ namespace GodlikeStickCreator.ViewModels
             var alreadyAdded = Systems.Where(x => x.IsAdded).ToList();
             foreach (var file in new DirectoryInfo(IsoPath).GetFiles())
             {
-                var system = Systems.FirstOrDefault(x => Regex.IsMatch(file.Name, x.IsoFileMatch));
+                var system = Systems.FirstOrDefault(x => x.IsoFileMatch.IsMatch(file.Name));
                 if (system == null)
                     continue;
 
