@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using GodlikeStickCreator.Annotations;
 using GodlikeStickCreator.Controls;
 using GodlikeStickCreator.Core.Config;
 using GodlikeStickCreator.Core.System;
@@ -16,14 +15,14 @@ namespace GodlikeStickCreator.Core
     public class BootStickCreator
     {
         private const string DriveDirectory = "multiboot";
-        private readonly BootStickConfig _bootStickConfig;
+        private readonly SysLinuxAppearance _sysLinuxAppearance;
         private readonly DriveInfo _drive;
         private readonly Dictionary<InstallMethod, InstallerInfo> _installer;
 
-        public BootStickCreator(DriveInfo drive, BootStickConfig bootStickConfig)
+        public BootStickCreator(DriveInfo drive, SysLinuxAppearance sysLinuxAppearance)
         {
             _drive = drive;
-            _bootStickConfig = bootStickConfig;
+            _sysLinuxAppearance = sysLinuxAppearance;
 
             _installer = new List<InstallerInfo>
             {
@@ -76,7 +75,28 @@ namespace GodlikeStickCreator.Core
             if (!systemDirectory.Exists)
                 return;
 
-            systemDirectory.Delete(true);
+            DeleteDirectory(systemDirectory.FullName);
+        }
+
+        private void DeleteDirectory(string targetDir)
+        {
+            File.SetAttributes(targetDir, FileAttributes.Normal);
+
+            string[] files = Directory.GetFiles(targetDir);
+            string[] dirs = Directory.GetDirectories(targetDir);
+
+            foreach (string file in files)
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
+            }
+
+            foreach (string dir in dirs)
+            {
+                DeleteDirectory(dir);
+            }
+
+            Directory.Delete(targetDir, false);
         }
 
         public void CreateBootStick(Logger logger)
@@ -97,16 +117,17 @@ namespace GodlikeStickCreator.Core
                 logger.Status("Write syslinux config");
                 var sysLinuxFile = new FileInfo(Path.Combine(targetDirectory.FullName, "syslinux.cfg"));
                 if (sysLinuxFile.Exists)
-                    SysLinuxConfigFile = SysLinuxConfigFile.OpenFile(sysLinuxFile.FullName, _bootStickConfig);
+                    SysLinuxConfigFile = SysLinuxConfigFile.OpenFile(sysLinuxFile.FullName, _sysLinuxAppearance);
                 else
-                    SysLinuxConfigFile = SysLinuxConfigFile.Create(sysLinuxFile.FullName, _bootStickConfig);
+                    SysLinuxConfigFile = SysLinuxConfigFile.Create(sysLinuxFile.FullName, _sysLinuxAppearance);
 
                 logger.Status("Copy background.png");
                 var backgroundFilePath = Path.Combine(targetDirectory.FullName, "background.png");
-                if (!string.IsNullOrEmpty(_bootStickConfig.ScreenBackground) &&
-                    File.Exists(_bootStickConfig.ScreenBackground))
-                    File.Copy(_bootStickConfig.ScreenBackground, backgroundFilePath);
-                else
+                if (!string.IsNullOrEmpty(_sysLinuxAppearance.ScreenBackground) &&
+                    File.Exists(_sysLinuxAppearance.ScreenBackground))
+                    File.Copy(_sysLinuxAppearance.ScreenBackground, backgroundFilePath);
+                else if (!File.Exists(backgroundFilePath))
+                    //only copy if the file does not exist because the user could have already installed syslinux with a different background image
                     WpfUtilities.WriteResourceToFile(
                         new Uri("pack://application:,,,/Resources/SysLinuxFiles/background.png"), backgroundFilePath);
 

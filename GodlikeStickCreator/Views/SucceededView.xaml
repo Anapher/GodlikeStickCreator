@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="GodlikeStickCreator.Views.SucceededView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:GodlikeStickCreator.ViewModels"
+             d:DataContext="{d:DesignInstance viewModels:SucceededViewModel}"
+             d:DesignHeight="600"
+             d:DesignWidth="1100"
+             mc:Ignorable="d">
+    <Grid>
+        <TextBlock HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="16">
+            <Run Text="Successfully installed" />
+            <Run Foreground="#2980b9">
+                <Run.Style>
+                    <Style TargetType="Run">
+                        <Setter Property="Text" Value="{Binding InstalledSystems.Count, Mode=OneWay}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding InstalledSystems.Count}" Value="1">
+                                <Setter Property="Text" Value="{Binding InstalledSystems[9].Name}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Run.Style>
+            </Run>
+            <Run>
+                <Run.Style>
+                    <Style TargetType="Run">
+                        <Setter Property="Text" Value="systems" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding InstalledSystems.Count}" Value="1">
+                                <Setter Property="Text" Value="" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Run.Style>
+            </Run>
+            <Run Text="on USB drive" />
+            <Run Foreground="#2980b9" Text="{Binding DriveInfo.Name}" />
+        </TextBlock>
+    </Grid>
+</UserControl>

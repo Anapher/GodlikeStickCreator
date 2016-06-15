@@ -6,12 +6,16 @@ using System.Windows;
 using System.Windows.Interop;
 using GodlikeStickCreator.Core;
 using GodlikeStickCreator.Utilities;
+using GodlikeStickCreator.ViewModelBase;
+using GodlikeStickCreator.Views;
 
 namespace GodlikeStickCreator.ViewModels
 {
     public class SelectDriveViewModel : View
     {
         private ObservableCollection<DriveInfo> _drives;
+
+        private SysLinuxConfigFile _driveSysLinuxConfigFile;
         private bool _formatDrive;
         private bool _formatDriveChangedByUser;
         private DriveInfo _selectedDrive;
@@ -21,7 +25,8 @@ namespace GodlikeStickCreator.ViewModels
         public SelectDriveViewModel(UsbStickSettings usbStickSettings) : base(usbStickSettings)
         {
             Drives =
-                new ObservableCollection<DriveInfo>(DriveInfo.GetDrives().Where(x => x.IsReady && x.DriveType == DriveType.Removable));
+                new ObservableCollection<DriveInfo>(
+                    DriveInfo.GetDrives().Where(x => x.IsReady && x.DriveType == DriveType.Removable));
             if (Drives.Count == 0)
                 ShowAllDrives = true;
             Application.Current.MainWindow.SourceInitialized += MainWindowOnSourceInitialized;
@@ -59,8 +64,28 @@ namespace GodlikeStickCreator.ViewModels
                         UsbStickSettings.FormatDrive = _formatDrive;
                         OnPropertyChanged(nameof(FormatDrive));
                     }
+                    if (value != null)
+                    {
+                        var sysLinuxFile =
+                            new FileInfo(Path.Combine(value.RootDirectory.Root.FullName, "multiboot", "syslinux.cfg"));
+                        if (sysLinuxFile.Exists)
+                        {
+                            SysLinuxConfigFile.TryParse(sysLinuxFile.FullName, out _driveSysLinuxConfigFile);
+                            OnPropertyChanged(nameof(DriveSysLinuxConfigFile));
+                        }
+                        else
+                            DriveSysLinuxConfigFile = null;
+                    }
+                    else
+                        DriveSysLinuxConfigFile = null;
                 }
             }
+        }
+
+        public SysLinuxConfigFile DriveSysLinuxConfigFile
+        {
+            get { return _driveSysLinuxConfigFile; }
+            set { SetProperty(value, ref _driveSysLinuxConfigFile); }
         }
 
         public bool FormatDrive
@@ -96,6 +121,22 @@ namespace GodlikeStickCreator.ViewModels
                             : DriveInfo.GetDrives().Where(x => x.IsReady && x.DriveType == DriveType.Removable));
                     SelectedDrive = Drives.FirstOrDefault(x => x.Name == currentItem.Name);
                 }
+            }
+        }
+
+        private RelayCommand _manageDriveCommand;
+
+        public RelayCommand ManageDriveCommand
+        {
+            get
+            {
+                return _manageDriveCommand ?? (_manageDriveCommand = new RelayCommand(parameter =>
+                {
+                    if (SelectedDrive == null)
+                        return;
+
+                    new ManageWindow(DriveSysLinuxConfigFile, SelectedDrive) {Owner = Application.Current.MainWindow}.ShowDialog();
+                }));
             }
         }
 

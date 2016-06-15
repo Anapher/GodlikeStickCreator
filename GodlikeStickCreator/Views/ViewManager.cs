@@ -24,7 +24,8 @@ namespace GodlikeStickCreator.Views
                     {typeof (SystemsViewModel), typeof (SystemsView)},
                     {typeof (ApplicationsViewModel), typeof (ApplicationsView)},
                     {typeof (ModifyAppearanceViewModel), typeof (ModifyAppearanceView)},
-                    {typeof (ProcessViewModel), typeof (ProcessView)}
+                    {typeof (ProcessViewModel), typeof (ProcessView)},
+                    {typeof (SucceededView), typeof (SucceededViewModel)}
                 });
         }
 

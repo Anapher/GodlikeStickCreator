@@ -10,13 +10,13 @@ namespace GodlikeStickCreator.Core
     {
         public UsbStickSettings()
         {
-            BootStickConfig = new BootStickConfig();
+            SysLinuxAppearance = new SysLinuxAppearance();
         }
 
         public DriveInfo Drive { get; set; }
         public List<SystemInfo> Systems { get; set; }
         public List<ApplicationInfo> ApplicationInfo { get; set; }
-        public BootStickConfig BootStickConfig { get; set; }
+        public SysLinuxAppearance SysLinuxAppearance { get; set; }
         public bool FormatDrive { get; set; }
     }
 }
