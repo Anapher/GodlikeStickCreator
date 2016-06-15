@@ -175,9 +175,22 @@ namespace GodlikeStickCreator.ViewModels
                     DownloadUrl = new Lazy<string>(GetWinSCPDownloadUrl),
                     ApplicationCategory = ApplicationCategory.Network,
                     Description = "WinSCP is an open source free SFTP client and FTP client for Windows."
+                },
+                new ApplicationInfo
+                {
+                    Name = "PsTools",
+                    DownloadUrl = new Lazy<string>(() => "https://download.sysinternals.com/files/PSTools.zip"),
+                    ApplicationCategory = ApplicationCategory.SystemTools,
+                    Description = "he PsTools suite includes command-line utilities that help you administer your Windows NT/2K systems."
+                },
+                new ApplicationInfo
+                {
+                    Name = "SharpDevelop",
+                    DownloadUrl = new Lazy<string>(() => "http://netix.dl.sourceforge.net/project/sharpdevelop/SharpDevelop%205.x/5.1/SharpDevelop_5.1.0.5216_Xcopyable.zip"),
+                    ApplicationCategory = ApplicationCategory.Editors,
+                    Description = "#develop (short for SharpDevelop) is a free IDE for C# projects on Microsoft's .NET platform"
                 }
             }.OrderBy(x => x.Name));
-
             foreach (var applicationInfo in Applications)
                 applicationInfo.Add = true;
 

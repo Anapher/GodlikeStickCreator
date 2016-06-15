@@ -1,4 +1,4 @@
-﻿<controls:MetroWindow x:Class="GodlikeStickCreator.MainWindow"
+﻿<Window x:Class="GodlikeStickCreator.MainWindow"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
@@ -9,7 +9,8 @@
                       Title="Godlike Stick Creator"
                       Width="1100"
                       Height="600"
-                      GlowBrush="{StaticResource AccentColorBrush}"
+                      MinWidth="1100"
+                      MinHeight="600"
                       WindowStartupLocation="CenterScreen"
                       mc:Ignorable="d">
     <Window.DataContext>
@@ -43,9 +44,22 @@
                 <Button Width="100"
                         Margin="10,0,0,0"
                         Command="{Binding GoForwardCommand}"
-                        Content="Continue"
-                        IsEnabled="{Binding CanGoForward}" />
+                        IsEnabled="{Binding CanGoForward}">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MetroButton}" TargetType="Button">
+                            <Setter Property="Content" Value="Continue" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentViewMode}" Value="{x:Static viewModels:ViewMode.LastStep}">
+                                    <Setter Property="Content" Value="Install" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding CurrentViewMode}" Value="{x:Static viewModels:ViewMode.Finished}">
+                                    <Setter Property="Content" Value="Close" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </StackPanel>
         </Border>
     </Grid>
-</controls:MetroWindow>
+</Window>

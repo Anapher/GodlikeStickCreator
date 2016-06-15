@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using GodlikeStickCreator.Core;
-using GodlikeStickCreator.Core.Config;
 using GodlikeStickCreator.Core.System;
 using GodlikeStickCreator.Utilities;
 using GodlikeStickCreator.ViewModelBase;
@@ -23,6 +22,7 @@ namespace GodlikeStickCreator.ViewModels
         private bool _canGoBack;
         private bool _canGoForward;
         private View _currentView;
+        private ViewMode _currentViewMode;
         private RelayCommand _goBackCommand;
         private RelayCommand _goForwardCommand;
 
@@ -79,7 +79,10 @@ namespace GodlikeStickCreator.ViewModels
             {
                 return _goBackCommand ?? (_goBackCommand = new RelayCommand(parameter =>
                 {
-                    CurrentView = _views[_views.IndexOf(CurrentView) - 1];
+                    if (CurrentView is ProcessViewModel)
+                        CurrentView = _views[_views.Count - 1];
+                    else
+                        CurrentView = _views[_views.IndexOf(CurrentView) - 1];
                     CanGoBack = _views.IndexOf(CurrentView) > 0;
                     RefreshCanGoForward();
                 }));
@@ -96,27 +99,37 @@ namespace GodlikeStickCreator.ViewModels
                     {
                         var processView = new ProcessViewModel(UsbStickSettings);
                         CurrentView = processView;
-                        bool failed;
+                        bool succeeded = false;
                         CanGoBack = false;
                         CanGoForward = false;
                         try
                         {
-                            failed = await DoYourStuff(processView);
+                            succeeded = await DoYourStuff(processView);
                         }
                         catch (Exception ex)
                         {
                             processView.Logger.Error(ex.ToString());
-                            failed = true;
+                            succeeded = false;
                         }
 
-                        if (failed)
+                        if (succeeded)
+                        {
+                            CanGoBack = false;
+                            CanGoForward = true;
+                            CurrentView = new SucceededViewModel(UsbStickSettings);
+                            CurrentViewMode = ViewMode.Finished;
+                        }
+                        else
                         {
                             CanGoBack = true;
+                            processView.Message = "Failed";
+                            processView.CurrentProgress = 0;
                         }
                         return;
                     }
                     if (CurrentViewMode == ViewMode.Finished)
                     {
+                        Application.Current.Shutdown();
                         return;
                     }
                     CurrentView = _views[_views.IndexOf(CurrentView) + 1];
@@ -128,7 +141,11 @@ namespace GodlikeStickCreator.ViewModels
 
         public UsbStickSettings UsbStickSettings { get; }
 
-        public ViewMode CurrentViewMode { get; set; }
+        public ViewMode CurrentViewMode
+        {
+            get { return _currentViewMode; }
+            set { SetProperty(value, ref _currentViewMode); }
+        }
 
         private async Task<bool> DoYourStuff(ProcessViewModel processView)
         {
@@ -204,8 +221,7 @@ namespace GodlikeStickCreator.ViewModels
                 UsbStickSettings.Drive.VolumeLabel = App.DriveLabel;
             }
 
-            var bootStickCreator = new BootStickCreator(UsbStickSettings.Drive,
-                new BootStickConfig {ScreenMessage = "Hello World", ScreenTitle = "Godlike Stick"});
+            var bootStickCreator = new BootStickCreator(UsbStickSettings.Drive, UsbStickSettings.SysLinuxAppearance);
             processView.Message = "Creating bootable stick";
             await Task.Run(() => bootStickCreator.CreateBootStick(processView.Logger));
             processView.CurrentProgress = 0.1;
@@ -296,7 +312,6 @@ namespace GodlikeStickCreator.ViewModels
                     file.ExtractionFinished += (sender, args) => autoResetEvent.Set();
                     file.BeginExtractArchive(targetDirectory.FullName);
                     await Task.Run(() => autoResetEvent.WaitOne());
-
                 }
 
                 File.Delete(tempFile);

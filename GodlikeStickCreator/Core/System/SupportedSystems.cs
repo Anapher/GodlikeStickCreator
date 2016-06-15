@@ -133,6 +133,18 @@ namespace GodlikeStickCreator.Core.System
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/ntpaswd.png", UriKind.Relative)),
                     IsoFileMatch = new Regex(@"^usb.*\.zip$"),
                     SpecialSnowflake = SpecialSnowflake.IsoLinuxPrompt0
+                },
+                new SystemInfo
+                {
+                    Name = "Kon-Boot Purchased",
+                    Description =
+                        "Kon-Boot is one of the best tools around which can log you into Windows without knowing the password.",
+                    Category = Category.SystemTools,
+                    InstallMethod = InstallMethod.KonBootPurchased,
+                    Website = "http://www.piotrbania.com/all/kon-boot/",
+                    DownloadUrl = "http://www.piotrbania.com/all/kon-boot/",
+                    Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/KonBoot.png", UriKind.Relative)),
+                    IsoFileMatch = new Regex(@"^kon-boot-installer\.exe$")
                 }
             };
         }

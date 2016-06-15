@@ -1,0 +1,45 @@
+﻿<Window x:Class="GodlikeStickCreator.Views.ManageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:GodlikeStickCreator.Controls"
+        xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:listViewLayoutManager="clr-namespace:GodlikeStickCreator.Extensions.ListViewLayoutManager"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:GodlikeStickCreator.ViewModels"
+        Title="Manage "
+        Width="1095"
+        Height="634"
+        d:DataContext="{d:DesignInstance viewModels:ManageViewModel}"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d">
+    <TabControl>
+        <TabItem Header="Systems">
+            <ListView listViewLayoutManager:ListViewLayoutManager.Enabled="true" ItemsSource="{Binding SysLinuxConfigFile.Entries}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn listViewLayoutManager:ProportionalColumn.Width="1"
+                                        DisplayMemberBinding="{Binding Name}"
+                                        Header="Name" />
+                        <GridViewColumn Width="300"
+                                        listViewLayoutManager:FixedColumn.Width="300"
+                                        Header="Directory">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock>
+                                            <Run Text="/multiboot/" /><Run Text="{Binding Directory, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </TabItem>
+        <TabItem Header="Appearance">
+            <controls:ChangeSysLinuxInterfaceControl SysLinuxAppearance="{Binding SysLinuxConfigFile.SysLinuxAppearance}" />
+        </TabItem>
+    </TabControl>
+</Window>

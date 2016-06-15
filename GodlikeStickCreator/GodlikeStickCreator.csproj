@@ -104,13 +104,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\ChangeSysLinuxInterfaceControl.xaml.cs">
+      <DependentUpon>ChangeSysLinuxInterfaceControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LogControl.xaml.cs">
       <DependentUpon>LogControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Logger.cs" />
     <Compile Include="Converter\EnumToDescriptionConverter.cs" />
     <Compile Include="Core\Applications\ApplicationInfo.cs" />
-    <Compile Include="Core\Config\BootStickConfig.cs" />
+    <Compile Include="Core\Config\SysLinuxAppearance.cs" />
     <Compile Include="Core\SysLinuxConfigFile.cs" />
     <Compile Include="Core\System\InstallerInfo.cs" />
     <Compile Include="Core\System\Installer\DefaultInstaller.cs" />
@@ -145,13 +148,18 @@
     <Compile Include="ViewModelBase\RelayCommand.cs" />
     <Compile Include="ViewModels\ApplicationsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\ManageViewModel.cs" />
     <Compile Include="ViewModels\ModifyAppearanceViewModel.cs" />
     <Compile Include="ViewModels\ProcessViewModel.cs" />
     <Compile Include="ViewModels\SelectDriveViewModel.cs" />
+    <Compile Include="ViewModels\SucceededViewModel.cs" />
     <Compile Include="ViewModels\SystemsViewModel.cs" />
     <Compile Include="ViewModels\View.cs" />
     <Compile Include="Views\ApplicationsView.xaml.cs">
       <DependentUpon>ApplicationsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ManageWindow.xaml.cs">
+      <DependentUpon>ManageWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ModifyAppearanceView.xaml.cs">
       <DependentUpon>ModifyAppearanceView.xaml</DependentUpon>
@@ -162,10 +170,17 @@
     <Compile Include="Views\SelectDriveView.xaml.cs">
       <DependentUpon>SelectDriveView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SucceededView.xaml.cs">
+      <DependentUpon>SucceededView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SystemsView.xaml.cs">
       <DependentUpon>SystemsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ViewManager.cs" />
+    <Page Include="Controls\ChangeSysLinuxInterfaceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\LogControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -183,11 +198,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\Styles\CleanWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\VectorGraphics.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ApplicationsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ManageWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -200,6 +223,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SelectDriveView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SucceededView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -236,7 +263,6 @@
     </None>
     <AppDesigner Include="Properties\" />
     <Resource Include="Resources\SysLinuxFiles\ifcpu64.c32" />
-    <Resource Include="Resources\Systems\Kaspersky\kav.cfg" />
     <Resource Include="Resources\SysLinuxFiles\chain.c32" />
     <Resource Include="Resources\SysLinuxFiles\libcom32.c32" />
     <Resource Include="Resources\SysLinuxFiles\libutil.c32" />
@@ -288,6 +314,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Utilities\7z.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\KonBoot.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

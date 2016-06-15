@@ -4,9 +4,9 @@ using GodlikeStickCreator.Utilities;
 
 namespace GodlikeStickCreator.Core.Config
 {
-    public class BootStickConfig
+    public class SysLinuxAppearance
     {
-        public BootStickConfig()
+        public SysLinuxAppearance()
         {
             ScreenTitle = "Godlike Stick";
             ScreenMessage = "What is Dead May Never Die";
