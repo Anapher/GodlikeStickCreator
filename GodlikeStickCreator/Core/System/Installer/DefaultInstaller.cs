@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using GodlikeStickCreator.Utilities;
-using ICSharpCode.SharpZipLib.Zip;
 using SevenZip;
 
 namespace GodlikeStickCreator.Core.System.Installer
