@@ -19,7 +19,7 @@
                         <Setter Property="Text" Value="{Binding InstalledSystems.Count, Mode=OneWay}" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding InstalledSystems.Count}" Value="1">
-                                <Setter Property="Text" Value="{Binding InstalledSystems[9].Name}" />
+                                <Setter Property="Text" Value="{Binding InstalledSystems[9].Name,Mode=OneWay}" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -38,7 +38,7 @@
                 </Run.Style>
             </Run>
             <Run Text="on USB drive" />
-            <Run Foreground="#2980b9" Text="{Binding DriveInfo.Name}" />
+            <Run Foreground="#2980b9" Text="{Binding DriveInfo.Name,Mode=OneWay}" />
         </TextBlock>
     </Grid>
 </UserControl>

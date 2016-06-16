@@ -1,11 +1,9 @@
-﻿using System.Windows.Controls;
-
-namespace GodlikeStickCreator.Views
+﻿namespace GodlikeStickCreator.Views
 {
     /// <summary>
     ///     Interaction logic for ModifyAppearanceView.xaml
     /// </summary>
-    public partial class ModifyAppearanceView : UserControl
+    public partial class ModifyAppearanceView
     {
         public ModifyAppearanceView()
         {

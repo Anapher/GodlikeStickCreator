@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,10 +22,10 @@ namespace GodlikeStickCreator.Core
         {
             _filename = filename;
             SysLinuxAppearance = sysLinuxAppearance;
-            Entries = new List<SystemEntry>();
+            Entries = new ObservableCollection<SystemEntry>();
         }
 
-        public List<SystemEntry> Entries { get; }
+        public ObservableCollection<SystemEntry> Entries { get; }
         public SysLinuxAppearance SysLinuxAppearance { get; private set; }
 
         private string GetDefaultHeader()
@@ -217,16 +218,26 @@ MENU COLOR unsel	    37;44   (?<unselectedForeground>(#.*?)) (?<unselectedBackgr
             });
         }
 
+        public void RemoveSystem(SystemEntry systemEntry)
+        {
+            RemoveSystem(systemEntry.Name);
+        }
+
         public void RemoveSystem(SystemInfo systemInfo)
         {
-            var openTag = $"\t# <{systemInfo.Name.Replace(" ", null)} ";
-            var closeTag = $"\t# </{systemInfo.Name.Replace(" ", null)}>";
+            RemoveSystem(systemInfo.Name);
+        }
+
+        private void RemoveSystem(string name)
+        {
+            var openTag = $"\t# <{name.Replace(" ", null)} ";
+            var closeTag = $"\t# </{name.Replace(" ", null)}>";
 
             var beginIndex = _content.IndexOf(openTag, StringComparison.InvariantCulture);
             var endIndex = _content.IndexOf(closeTag, StringComparison.InvariantCulture) + closeTag.Length;
             _content = _content.Remove(beginIndex, endIndex - beginIndex);
 
-            var entry = Entries.FirstOrDefault(x => x.Name == systemInfo.Name);
+            var entry = Entries.FirstOrDefault(x => x.Name == name);
             if (entry != null)
                 Entries.Remove(entry);
         }

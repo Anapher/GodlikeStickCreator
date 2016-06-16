@@ -14,32 +14,13 @@ namespace GodlikeStickCreator.Core.System.Installer
         public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out MenuItemInfo menuItem, SystemProgressReporter progressReporter)
         {
             progressReporter.ReportStatus(InstallationStatus.ExtractZipFile);
-            
-            if (filename.EndsWith(".zip"))
+
+            using (var file = new SevenZipExtractor(filename))
             {
-                using (var zipFilestream = File.OpenRead(filename))
-                {
-                    var fastZip = new FastZip(new FastZipEvents
-                    {
-                        Progress = (sender, args) =>
-                        {
-                            progressReporter.ReportProgress(args.PercentComplete / 100);
-                            progressReporter.SetMessage($"{args.Name} ({args.Processed} / {args.Target})");
-                        }
-                    });
-                    fastZip.ExtractZip(zipFilestream, systemDirectory.FullName, FastZip.Overwrite.Always, null, null,
-                        "-^boot$", false, true);
-                }
+                file.Extracting += (sender, args) => { progressReporter.ReportProgress(args.PercentDone / 100d); };
+                file.ExtractArchive(systemDirectory.FullName);
             }
-            else
-            {
-                using (var file = new SevenZipExtractor(filename))
-                {
-                    file.Extracting += (sender, args) => { progressReporter.ReportProgress(args.PercentDone/100d); };
-                    file.ExtractArchive(systemDirectory.FullName);
-                }
-            }
-            
+
             progressReporter.ReportStatus(InstallationStatus.WriteConfig);
             var configInfo = GetSystemBootInfo(systemDirectory.FullName);
             menuItem = new MenuItemInfo(
