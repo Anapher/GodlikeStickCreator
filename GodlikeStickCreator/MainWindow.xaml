@@ -35,33 +35,52 @@
                 BorderBrush="Black"
                 BorderThickness="0,1,0,0"
                 SnapsToDevicePixels="True">
-            <StackPanel Margin="10"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal">
-                <Button Width="100"
-                        Command="{Binding GoBackCommand}"
-                        Content="Back"
-                        IsEnabled="{Binding CanGoBack}" />
-                <Button Width="100"
-                        Margin="10,0,0,0"
-                        Command="{Binding GoForwardCommand}"
-                        IsEnabled="{Binding CanGoForward}">
+            <Grid>
+                <Button Margin="30,0,0,0" Command="{Binding OpenAboutCommand}"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource MetroButton}" TargetType="Button">
-                            <Setter Property="Content" Value="Continue" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding CurrentViewMode}" Value="{x:Static viewModels:ViewMode.LastStep}">
-                                    <Setter Property="Content" Value="Install" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding CurrentViewMode}" Value="{x:Static viewModels:ViewMode.Finished}">
-                                    <Setter Property="Content" Value="Close" />
-                                </DataTrigger>
-                            </Style.Triggers>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Grid Background="Transparent" Cursor="Hand">
+                                            <TextBlock Text="About" TextDecorations="Underline" />
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </Button.Style>
                 </Button>
-            </StackPanel>
+                <StackPanel Margin="10"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                    <Button Width="100"
+                            Command="{Binding GoBackCommand}"
+                            Content="Back"
+                            IsEnabled="{Binding CanGoBack}" />
+                    <Button Width="100"
+                            Margin="10,0,0,0"
+                            Command="{Binding GoForwardCommand}"
+                            IsEnabled="{Binding CanGoForward}">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource MetroButton}" TargetType="Button">
+                                <Setter Property="Content" Value="Continue" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentViewMode}" Value="{x:Static viewModels:ViewMode.LastStep}">
+                                        <Setter Property="Content" Value="Install" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding CurrentViewMode}" Value="{x:Static viewModels:ViewMode.Finished}">
+                                        <Setter Property="Content" Value="Close" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </Window>

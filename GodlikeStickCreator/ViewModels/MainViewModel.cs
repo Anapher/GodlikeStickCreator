@@ -12,6 +12,7 @@ using GodlikeStickCreator.Core;
 using GodlikeStickCreator.Core.System;
 using GodlikeStickCreator.Utilities;
 using GodlikeStickCreator.ViewModelBase;
+using GodlikeStickCreator.Views;
 using SevenZip;
 
 namespace GodlikeStickCreator.ViewModels
@@ -145,6 +146,19 @@ namespace GodlikeStickCreator.ViewModels
         {
             get { return _currentViewMode; }
             set { SetProperty(value, ref _currentViewMode); }
+        }
+
+        private RelayCommand _openAboutCommand;
+
+        public RelayCommand OpenAboutCommand
+        {
+            get
+            {
+                return _openAboutCommand ?? (_openAboutCommand = new RelayCommand(parameter =>
+                {
+                    new AboutWindow {Owner = Application.Current.MainWindow}.ShowDialog();
+                }));
+            }
         }
 
         private async Task<bool> DoYourStuff(ProcessViewModel processView)

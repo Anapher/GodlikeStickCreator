@@ -1,0 +1,155 @@
+﻿<Window x:Class="GodlikeStickCreator.Views.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:GodlikeStickCreator.ViewModels"
+        Title="About"
+        Width="700"
+        Height="400"
+        Icon="/Resources/Icon.ico"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d">
+    <Window.Resources>
+        <Style x:Key="HyperlinkStyle" TargetType="Hyperlink">
+            <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
+            <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Duration="0:0:0.1"
+                                                Storyboard.TargetProperty="(Hyperlink.Foreground).(SolidColorBrush.Color)"
+                                                To="{StaticResource AccentColor3}" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Duration="0:0:0.1"
+                                                Storyboard.TargetProperty="(Hyperlink.Foreground).(SolidColorBrush.Color)"
+                                                To="{StaticResource AccentColor}" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style BasedOn="{StaticResource HyperlinkStyle}" TargetType="Hyperlink" />
+    </Window.Resources>
+    <Window.DataContext>
+        <viewModels:AboutViewModel />
+    </Window.DataContext>
+    <ScrollViewer>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Margin="10" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Image Width="48"
+                           Height="48"
+                           Source="/Resources/Icon.ico" />
+                    <TextBlock Margin="10,0,0,0"
+                               VerticalAlignment="Center"
+                               FontFamily="Segoe UI Light"
+                               FontSize="24"
+                               Text="Godlike Stick Creator" />
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                    <TextBlock Text="Version: " />
+                    <TextBlock FontWeight="Bold" Text="{Binding CurrentVersion}" />
+                    <TextBlock Margin="5,0,0,0"
+                               FontWeight="Bold"
+                               Foreground="{DynamicResource AccentColorBrush}"
+                               Text="Release" />
+                </StackPanel>
+                <TextBlock Margin="0,5,0,0">
+                    <Hyperlink Command="{Binding OpenHyperlinkCommand}" CommandParameter="https://github.com/Alkalinee/GodlikeStickCreator">Open Source Software</Hyperlink>
+                    <Run Text="created by" />
+                    <Hyperlink Command="{Binding OpenHyperlinkCommand}" CommandParameter="https://github.com/Alkalinee">Alkalinee</Hyperlink>
+                    <Hyperlink Command="{Binding OpenHyperlinkCommand}" CommandParameter="https://www.gnu.org/licenses/gpl-3.0.en.html">(GPL v3)</Hyperlink>
+                </TextBlock>
+                <TextBlock Margin="0,20,0,0"
+                           FontWeight="Bold"
+                           Text="Libraries" />
+                <ItemsControl Margin="0,3,0,0" ItemsSource="{Binding Components}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Margin="0,0,3,0" TextWrapping="Wrap">
+                                    <Hyperlink Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
+                                                                 Path=DataContext.OpenHyperlinkCommand}"
+                                               CommandParameter="{Binding Url}"
+                                               NavigateUri="{Binding Url}"
+                                               Style="{StaticResource HyperlinkStyle}">
+                                        <TextBlock Text="{Binding Name}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                                <TextBlock Grid.Column="1"
+                                           Foreground="{DynamicResource BlackBrush}"
+                                           Text="{Binding Description}"
+                                           TextWrapping="Wrap" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Margin="0,20,0,0"
+                           FontWeight="Bold"
+                           Text="Images" />
+                <ItemsControl Margin="0,3,0,0" ItemsSource="{Binding ImageCreators}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{StaticResource BlackBrush}" Text="{Binding Name}" />
+                                <TextBlock Grid.Column="1">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding License}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <Hyperlink Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
+                                                                 Path=DataContext.OpenHyperlinkCommand}"
+                                               CommandParameter="{Binding LicenseUrl}"
+                                               Style="{StaticResource HyperlinkStyle}">
+                                        <TextBlock Text="{Binding License}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                                <TextBlock Grid.Column="2">
+                                    <Hyperlink Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
+                                                                 Path=DataContext.OpenHyperlinkCommand}"
+                                               CommandParameter="{Binding Website}"
+                                               Style="{StaticResource HyperlinkStyle}">
+                                        <TextBlock Text="Website" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Margin="0,20,0,0"
+                           FontWeight="Bold"
+                           Text="Thanks" />
+                <TextBlock Margin="0,5,0,0">
+                    <Run Text="Thanks to the" />
+                    <Hyperlink Command="{Binding OpenHyperlinkCommand}" CommandParameter="http://www.pendrivelinux.com/yumi-multiboot-usb-creator/">YUMI project</Hyperlink>
+                    <Run Text="For the idea and a lot of solutions" />
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Window>
