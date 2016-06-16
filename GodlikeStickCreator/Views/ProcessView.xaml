@@ -20,7 +20,9 @@
                     Margin="10"
                     Orientation="Vertical">
             <TextBlock Text="{Binding Message}" />
-            <controls1:MetroProgressBar Maximum="1" Value="{Binding CurrentProgress}" />
+            <controls1:MetroProgressBar Margin="0,2,0,0"
+                                        Maximum="1"
+                                        Value="{Binding CurrentProgress}" />
         </StackPanel>
     </Grid>
 </UserControl>

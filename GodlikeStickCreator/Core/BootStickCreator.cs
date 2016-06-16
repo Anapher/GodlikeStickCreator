@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Windows;
 using GodlikeStickCreator.Controls;
 using GodlikeStickCreator.Core.Config;
@@ -86,9 +87,12 @@ namespace GodlikeStickCreator.Core
             try
             {
                 var targetDirectory = new DirectoryInfo(Path.Combine(_drive.RootDirectory.FullName, DriveDirectory));
-                targetDirectory.Create();
 
-                logger.Status($"Create /{DriveDirectory} directory on drive");
+                if (!targetDirectory.Exists)
+                {
+                    logger.Status($"Create /{DriveDirectory} directory on drive");
+                    targetDirectory.Create();
+                }
 
                 if (!File.Exists(Path.Combine(targetDirectory.FullName, "libcom32.c32")))
                     InstallSysLinux(_drive, tempDirectory, logger);
@@ -111,19 +115,40 @@ namespace GodlikeStickCreator.Core
                         new Uri("pack://application:,,,/Resources/SysLinuxFiles/background.png"), backgroundFilePath);
 
                 var randomFiles = new[]
-                {"chain.c32", "libcom32.c32", "libutil.c32", "memdisk", "menu.c32", "vesamenu.c32"};
+                {"chain.c32", "libcom32.c32", "libutil.c32", "memdisk", "menu.c32", "vesamenu.c32", "grub.exe"};
                 foreach (var randomFile in randomFiles)
                 {
+                    var resource =
+                        Application.GetResourceStream(
+                            new Uri($"pack://application:,,,/Resources/SysLinuxFiles/{randomFile}"));
+
+                    if (resource == null)
+                        throw new FileNotFoundException();
+
+                    var targetFile = Path.Combine(targetDirectory.FullName, randomFile);
+                    if (File.Exists(targetFile))
+                    {
+                        byte[] resourceHash;
+                        byte[] fileHash;
+                        using (var md5 = new MD5CryptoServiceProvider())
+                        {
+                            resourceHash = md5.ComputeHash(resource.Stream);
+                            using (var fs = new FileStream(targetFile, FileMode.Open, FileAccess.Read))
+                                fileHash = md5.ComputeHash(fs);
+                        }
+
+                        if (resourceHash.SequenceEqual(fileHash))
+                        {
+                            logger.Status($"{randomFile} already exists");
+                            continue;
+                        }
+                    }
+
                     logger.Status($"Write \"{Path.Combine(targetDirectory.FullName, randomFile)}\"");
                     WpfUtilities.WriteResourceToFile(
                         new Uri($"pack://application:,,,/Resources/SysLinuxFiles/{randomFile}"),
                         Path.Combine(targetDirectory.FullName, randomFile));
                 }
-
-                logger.Status($"Write \"{Path.Combine(targetDirectory.FullName, "grub.exe")}\"");
-                WpfUtilities.WriteResourceToFile(
-                    new Uri("pack://application:,,,/Resources/SysLinuxFiles/grub.exe"),
-                    Path.Combine(targetDirectory.FullName, "grub.exe"));
             }
             finally
             {
