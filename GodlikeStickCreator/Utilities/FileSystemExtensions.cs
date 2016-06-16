@@ -3,7 +3,7 @@ using System.IO;
 
 namespace GodlikeStickCreator.Utilities
 {
-    public static class FileExtensions
+    public static class FileSystemExtensions
     {
         /// <summary>
         ///     If the directory <see cref="path" /> already exists, add a number at the end to make it non existing
@@ -37,6 +37,31 @@ namespace GodlikeStickCreator.Utilities
                 if (!File.Exists(path))
                     return path;
             }
+        }
+
+        /// <summary>
+        ///     Delete a directory even if it contains files which are marked as read only
+        /// </summary>
+        /// <param name="targetDir">The directory to delete</param>
+        public static void DeleteDirectory(string targetDir)
+        {
+            File.SetAttributes(targetDir, FileAttributes.Normal);
+
+            string[] files = Directory.GetFiles(targetDir);
+            string[] dirs = Directory.GetDirectories(targetDir);
+
+            foreach (string file in files)
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
+            }
+
+            foreach (string dir in dirs)
+            {
+                DeleteDirectory(dir);
+            }
+
+            Directory.Delete(targetDir, false);
         }
     }
 }

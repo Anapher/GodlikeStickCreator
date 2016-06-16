@@ -73,7 +73,7 @@ namespace GodlikeStickCreator.Controls
             {
                 return _changeBackgroundImageCommand ?? (_changeBackgroundImageCommand = new RelayCommand(parameter =>
                 {
-                    var ofd = new OpenFileDialog {Filter = "Image files|*.png;*.jpg"};
+                    var ofd = new OpenFileDialog {Filter = "Image files|*.png"};
                     if (ofd.ShowDialog(Application.Current.MainWindow) == true)
                     {
                         BackgroundImage = new BitmapImage(new Uri(ofd.FileName, UriKind.RelativeOrAbsolute));

@@ -13,7 +13,7 @@ namespace GodlikeStickCreator.Views
         {
             InitializeComponent();
             Title = $"Manage {driveInfo.Name} ({driveInfo.VolumeLabel})";
-            DataContext = new ManageViewModel(sysLinuxConfigFile, driveInfo);
+            DataContext = new ManageViewModel(sysLinuxConfigFile, driveInfo, this);
         }
     }
 }

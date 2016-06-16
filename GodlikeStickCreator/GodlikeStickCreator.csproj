@@ -36,6 +36,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -139,7 +142,7 @@
     <Compile Include="Utilities\ColorExtensions.cs" />
     <Compile Include="Utilities\DriveUtilities.cs" />
     <Compile Include="Utilities\EnumUtilities.cs" />
-    <Compile Include="Utilities\FileExtensions.cs" />
+    <Compile Include="Utilities\FileSystemExtensions.cs" />
     <Compile Include="Utilities\MessageBoxEx.cs" />
     <Compile Include="Utilities\UsbNotification.cs" />
     <Compile Include="Utilities\User.cs" />
@@ -163,6 +166,9 @@
     </Compile>
     <Compile Include="Views\ModifyAppearanceView.xaml.cs">
       <DependentUpon>ModifyAppearanceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AppearanceDesignerWindow.xaml.cs">
+      <DependentUpon>AppearanceDesignerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ProcessView.xaml.cs">
       <DependentUpon>ProcessView.xaml</DependentUpon>
@@ -215,6 +221,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ModifyAppearanceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AppearanceDesignerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -317,6 +327,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Thumbnails\KonBoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

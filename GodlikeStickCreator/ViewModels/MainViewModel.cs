@@ -284,7 +284,7 @@ namespace GodlikeStickCreator.ViewModels
                 var downloadUrl = await Task.Run(() => application.DownloadUrl.Value);
                 processView.Logger.Status($"Download {downloadUrl}");
                 var tempFile =
-                    FileExtensions.GetFreeTempFileName(application.Extension ??
+                    FileSystemExtensions.GetFreeTempFileName(application.Extension ??
                                                        new FileInfo(new Uri(downloadUrl).AbsolutePath).Extension);
                 File.Delete(tempFile);
                 var webClient = new WebClient();
@@ -304,6 +304,11 @@ namespace GodlikeStickCreator.ViewModels
                     new DirectoryInfo(Path.Combine(UsbStickSettings.Drive.RootDirectory.FullName,
                         "Tools",
                         EnumUtilities.GetDescription(application.ApplicationCategory), application.Name));
+                if (targetDirectory.Exists)
+                {
+                    processView.Logger.Warn("Old application found, removing...");
+                    FileSystemExtensions.DeleteDirectory(targetDirectory.FullName);
+                }
                 targetDirectory.Create();
 
                 using (var file = new SevenZipExtractor(tempFile))

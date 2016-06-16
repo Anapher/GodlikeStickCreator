@@ -6,7 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="clr-namespace:GodlikeStickCreator.ViewModels"
              d:DataContext="{d:DesignInstance viewModels:ModifyAppearanceViewModel}"
-             d:DesignHeight="600"
+             d:DesignHeight="550"
              d:DesignWidth="1100"
              mc:Ignorable="d">
     <controls1:ChangeSysLinuxInterfaceControl SysLinuxAppearance="{Binding SysLinuxAppearance}" />
