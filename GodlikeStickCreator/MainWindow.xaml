@@ -36,9 +36,10 @@
                 BorderThickness="0,1,0,0"
                 SnapsToDevicePixels="True">
             <Grid>
-                <Button Margin="30,0,0,0" Command="{Binding OpenAboutCommand}"
+                <Button Margin="30,0,0,0"
                         HorizontalAlignment="Left"
-                        VerticalAlignment="Center">
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenAboutCommand}">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Template">

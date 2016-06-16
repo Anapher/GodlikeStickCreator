@@ -52,7 +52,14 @@ namespace GodlikeStickCreator.ViewModels
             Application.Current.Exit += (sender, args) =>
             {
                 _views.ForEach(x => x.Dispose());
-                tempFolder.Delete(true);
+                try
+                {
+                    tempFolder.Delete(true);
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
             };
         }
 
@@ -186,7 +193,7 @@ namespace GodlikeStickCreator.ViewModels
                     $"Format drive {UsbStickSettings.Drive.Name}", MessageBoxButton.OKCancel,
                     MessageBoxImage.Warning, MessageBoxResult.Cancel) != MessageBoxResult.OK)
                     return false;
-
+                processView.Message = "Format USB stick to FAT32";
                 processView.Logger.Status($"Formatting drive {UsbStickSettings.Drive.Name} with FAT32");
                 var driveLetter = UsbStickSettings.Drive.Name.Substring(0, 2);
 
@@ -229,14 +236,20 @@ namespace GodlikeStickCreator.ViewModels
                 processView.Logger.Success("Successfully formatted drive");
             }
 
+            processView.Message = "Creating bootable stick";
+
             if (UsbStickSettings.Drive.VolumeLabel != App.DriveLabel)
             {
                 processView.Logger.Status("Change volume label to " + App.DriveLabel);
                 UsbStickSettings.Drive.VolumeLabel = App.DriveLabel;
             }
 
+            if (UsbStickSettings.Drive.DriveFormat != "FAT32")
+                processView.Logger.Warn(
+                    $"The drive {UsbStickSettings.Drive.RootDirectory.FullName} is {UsbStickSettings.Drive.DriveFormat} formatted which may be incompatible with SysLinux (it is recommended to format it as FAT32)");
+
             var bootStickCreator = new BootStickCreator(UsbStickSettings.Drive, UsbStickSettings.SysLinuxAppearance);
-            processView.Message = "Creating bootable stick";
+            processView.CurrentProgress = 0.05;
             await Task.Run(() => bootStickCreator.CreateBootStick(processView.Logger));
             processView.CurrentProgress = 0.1;
 
@@ -273,7 +286,7 @@ namespace GodlikeStickCreator.ViewModels
                             continue;
                     }
 
-                    bootStickCreator.RemoveSystem(systemInfo);
+                    await Task.Run(() => bootStickCreator.RemoveSystem(systemInfo));
                 }
 
                 processView.Message = $"Install {systemInfo.Name} ({i + 1} / {UsbStickSettings.Systems.Count})";
@@ -283,6 +296,8 @@ namespace GodlikeStickCreator.ViewModels
                         () =>
                             bootStickCreator.AddSystemToBootStick(systemInfo, processView.Logger,
                                 progressReporter));
+
+                processView.Logger.Success("Added " + systemInfo.Name);
             }
 
             processView.CurrentProgress = 0.7;
@@ -328,9 +343,11 @@ namespace GodlikeStickCreator.ViewModels
                 using (var file = new SevenZipExtractor(tempFile))
                 using (var autoResetEvent = new AutoResetEvent(false))
                 {
-                    file.ExtractionFinished += (sender, args) => autoResetEvent.Set();
+                    EventHandler<EventArgs> setHandler = (sender, args) => autoResetEvent.Set();
+                    file.ExtractionFinished += setHandler;
                     file.BeginExtractArchive(targetDirectory.FullName);
                     await Task.Run(() => autoResetEvent.WaitOne());
+                    file.ExtractionFinished -= setHandler;
                 }
 
                 File.Delete(tempFile);
