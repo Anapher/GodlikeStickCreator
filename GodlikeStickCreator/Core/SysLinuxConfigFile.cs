@@ -81,14 +81,8 @@ MENU DEFAULT";
 
         private void Load(string content)
         {
-            var contentHeader =
-                Regex.Match(content, @"# <Header>\s*(?<header>(.*?))\s*# <\/Header>", RegexOptions.Singleline).Groups[
-                    "header"].Value;
-            var defaultHeader = GetDefaultHeader();
-            if (contentHeader != defaultHeader)
-                content = content.Replace(contentHeader, defaultHeader);
-
             _content = content;
+            UpdateHeader();
             ParseEntries();
         }
 
@@ -229,6 +223,16 @@ MENU COLOR unsel	    37;44   (?<unselectedForeground>(#.*?)) (?<unselectedBackgr
             RemoveSystem(systemInfo.Name);
         }
 
+        private void UpdateHeader()
+        {
+            var contentHeader =
+                Regex.Match(_content, @"# <Header>\s*(?<header>(.*?))\s*# <\/Header>", RegexOptions.Singleline).Groups[
+                    "header"].Value;
+            var defaultHeader = GetDefaultHeader();
+            if (contentHeader != defaultHeader)
+                _content = _content.Replace(contentHeader, defaultHeader);
+        }
+
         private void RemoveSystem(string name)
         {
             var openTag = $"\t# <{name.Replace(" ", null)} ";
@@ -277,6 +281,7 @@ MENU COLOR unsel	    37;44   (?<unselectedForeground>(#.*?)) (?<unselectedBackgr
 
         public void Save()
         {
+            UpdateHeader();
             File.WriteAllText(_filename, _content);
         }
 

@@ -79,7 +79,6 @@ namespace GodlikeStickCreator.Controls
                         BackgroundImage = new BitmapImage(new Uri(ofd.FileName, UriKind.RelativeOrAbsolute));
                         SysLinuxAppearance.ScreenBackground = ofd.FileName;
                         OnPropertyChanged(nameof(SysLinuxAppearance));
-
                     }
                 }));
             }
@@ -92,9 +91,19 @@ namespace GodlikeStickCreator.Controls
         {
             var control = (ChangeSysLinuxInterfaceControl) dependencyObject;
             var sysLinuxAppearance = dependencyPropertyChangedEventArgs.NewValue as SysLinuxAppearance;
-            control.BackgroundImage = new BitmapImage(string.IsNullOrEmpty(sysLinuxAppearance?.ScreenBackground)
-                ? new Uri("/Resources/SysLinuxFiles/background.png", UriKind.Relative)
-                : new Uri(sysLinuxAppearance.ScreenBackground, UriKind.RelativeOrAbsolute));
+            control.BackgroundImage = string.IsNullOrEmpty(sysLinuxAppearance?.ScreenBackground)
+                ? new BitmapImage(new Uri("/Resources/SysLinuxFiles/background.png", UriKind.Relative))
+                : LoadBitmapImageIntoMemory(new Uri(sysLinuxAppearance.ScreenBackground, UriKind.RelativeOrAbsolute));
+        }
+
+        private static BitmapImage LoadBitmapImageIntoMemory(Uri uri)
+        {
+            var bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.UriSource = uri;
+            bitmapImage.EndInit();
+            return bitmapImage;
         }
 
         [NotifyPropertyChangedInvocator]

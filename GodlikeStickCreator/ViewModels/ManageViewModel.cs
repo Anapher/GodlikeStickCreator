@@ -47,13 +47,21 @@ namespace GodlikeStickCreator.ViewModels
                     window.ShowDialog();
                     if (currentBackgroundPath != SysLinuxConfigFile.SysLinuxAppearance.ScreenBackground)
                     {
-                        if (!string.IsNullOrEmpty(SysLinuxConfigFile.SysLinuxAppearance.ScreenBackground))
-                            File.Copy(SysLinuxConfigFile.SysLinuxAppearance.ScreenBackground,
-                                Path.Combine(Drive.RootDirectory.FullName, "multiboot", "background.png"));
-                        else
-                            WpfUtilities.WriteResourceToFile(
-                                new Uri("pack://application:,,,/Resources/SysLinuxFiles/background.png"),
-                                Path.Combine(Drive.RootDirectory.FullName, "multiboot", "background.png"));
+                        try
+                        {
+                            if (!string.IsNullOrEmpty(SysLinuxConfigFile.SysLinuxAppearance.ScreenBackground))
+                                File.Copy(SysLinuxConfigFile.SysLinuxAppearance.ScreenBackground,
+                                    Path.Combine(Drive.RootDirectory.FullName, "multiboot", "background.png"), true);
+                            else
+                                WpfUtilities.WriteResourceToFile(
+                                    new Uri("pack://application:,,,/Resources/SysLinuxFiles/background.png"),
+                                    Path.Combine(Drive.RootDirectory.FullName, "multiboot", "background.png"));
+                        }
+                        catch (IOException ex)
+                        {
+                            MessageBoxEx.Show(_window, "Failed to replace background.png: " + ex.Message,
+                                "Error replacing file", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                     SysLinuxConfigFile.Save();
                 }));

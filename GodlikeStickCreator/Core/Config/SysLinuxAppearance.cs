@@ -12,14 +12,14 @@ namespace GodlikeStickCreator.Core.Config
             ScreenMessage = "What is Dead May Never Die";
             ScreenBackground = string.Empty;
             ReturnToMainMenuText = "Return to the main menu.";
-            TitleForegroundColor = Color.FromRgb(41, 128, 185);
+            TitleForegroundColor = Color.FromRgb(190, 190, 190);
             TitleBackgroundColor = Color.FromArgb(0, 0, 0, 0);
-            SelectedBackgroundColor = Color.FromRgb(255, 255, 255);
+            SelectedBackgroundColor = Color.FromRgb(209, 209, 209);
             SelectedForegroundColor = Color.FromRgb(0, 0, 0);
-            BorderForegroundColor = Color.FromRgb(41, 128, 185);
+            BorderForegroundColor = Color.FromArgb(180, 190, 190, 190);
             BorderBackgroundColor = Color.FromArgb(0, 0, 0, 0);
-            TabMsgForegroundColor = Color.FromRgb(255, 255, 255);
-            UnselectedForegroundColor = Color.FromRgb(255, 255, 255);
+            TabMsgForegroundColor = Color.FromRgb(190, 190, 190);
+            UnselectedForegroundColor = Color.FromRgb(190, 190, 190);
             UnselectedBackgroundColor = Color.FromArgb(0, 0, 0, 0);
         }
 

@@ -76,6 +76,13 @@ namespace GodlikeStickCreator.ViewModels
                     Website = "http://designmodo.com/",
                     License = "CC 3.0",
                     LicenseUrl = "https://creativecommons.org/licenses/by/3.0/"
+                },
+                new ImageCreator
+                {
+                    Name = "Starline (Freepik)",
+                    Website = "http://www.freepik.com/free-photos-vectors/background",
+                    License = "CC 3.0",
+                    LicenseUrl = "https://creativecommons.org/licenses/by/3.0/"
                 }
             };
 
