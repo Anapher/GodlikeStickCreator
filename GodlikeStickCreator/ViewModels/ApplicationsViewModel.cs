@@ -260,8 +260,15 @@ namespace GodlikeStickCreator.ViewModels
 
         private static string GetWinSCPDownloadUrl()
         {
-            var source = new WebClient().DownloadString("https://winscp.net/eng/download.php");
-            return "https://winscp.net" + Regex.Match(source, @"<a href=""\.\.(?<downloadUrl>(.*?))\.zip""").Groups["downloadUrl"].Value + ".zip";
+            using (var webClient = new WebClient())
+            {
+                var source = webClient.DownloadString("https://winscp.net/eng/download.php");
+                source =
+                    webClient.DownloadString("https://winscp.net" +
+                                             Regex.Match(source, @"<a href=""\.\.(?<downloadUrl>(.*?))\.zip""").Groups[
+                                                 "downloadUrl"].Value + ".zip");
+                return Regex.Match(source, @"href='(?<url>(.*?))'>\[Direct download\]<\/a>").Groups["url"].Value;
+            }
         }
     }
 }

@@ -19,7 +19,10 @@
                         <Setter Property="Text" Value="{Binding InstalledSystems.Count, Mode=OneWay}" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding InstalledSystems.Count}" Value="1">
-                                <Setter Property="Text" Value="{Binding InstalledSystems[9].Name,Mode=OneWay}" />
+                                <Setter Property="Text" Value="{Binding InstalledSystems[9].Name, Mode=OneWay}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding InstalledSystems.Count}" Value="0">
+                                <Setter Property="Text" Value="" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -33,12 +36,35 @@
                             <DataTrigger Binding="{Binding InstalledSystems.Count}" Value="1">
                                 <Setter Property="Text" Value="" />
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding InstalledSystems.Count}" Value="0">
+                                <Setter Property="Text" Value="" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Run.Style>
+            </Run>
+            <Run Text="and" />
+            <Run Foreground="#2980b9">
+                <Run.Style>
+                    <Style TargetType="Run">
+                        <Setter Property="Text" Value="{Binding InstalledApplications.Count, Mode=OneWay}" />
+                    </Style>
+                </Run.Style>
+            </Run>
+            <Run>
+                <Run.Style>
+                    <Style TargetType="Run">
+                        <Setter Property="Text" Value="applications" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding InstalledApplications.Count}" Value="1">
+                                <Setter Property="Text" Value="application" />
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Run.Style>
             </Run>
             <Run Text="on USB drive" />
-            <Run Foreground="#2980b9" Text="{Binding DriveInfo.Name,Mode=OneWay}" />
+            <Run Foreground="#2980b9" Text="{Binding DriveInfo.Name, Mode=OneWay}" />
         </TextBlock>
     </Grid>
 </UserControl>

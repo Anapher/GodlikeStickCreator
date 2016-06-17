@@ -147,7 +147,7 @@
                 <TextBlock Margin="0,5,0,0">
                     <Run Text="Thanks to the" />
                     <Hyperlink Command="{Binding OpenHyperlinkCommand}" CommandParameter="http://www.pendrivelinux.com/yumi-multiboot-usb-creator/">YUMI project</Hyperlink>
-                    <Run Text="For the idea and a lot of solutions" />
+                    <Run Text="for the idea and a lot of solutions" />
                 </TextBlock>
             </StackPanel>
         </StackPanel>
