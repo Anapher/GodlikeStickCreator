@@ -24,6 +24,22 @@ namespace GodlikeStickCreator.Native
         [DllImport("kernel32.dll")]
         internal static extern IntPtr GetCurrentThreadId();
 
+        [DllImport("Shell32.dll", SetLastError = false)]
+        internal static extern Int32 SHGetStockIconInfo(SHSTOCKICONID siid, SHGSI uFlags, ref SHSTOCKICONINFO psii);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern bool DestroyIcon(IntPtr hIcon);
+
+        [DllImport("user32.dll")]
+        internal static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
+
+        [DllImport("user32.dll")]
+        internal static extern bool SetWindowPos(IntPtr hwnd, IntPtr hwndInsertAfter, int x, int y, int width,
+            int height, uint flags);
+
+        [DllImport("user32.dll")]
+        internal static extern int GetWindowLong(IntPtr hwnd, int index);
+
         internal delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
     }
 }

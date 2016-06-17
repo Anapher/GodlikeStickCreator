@@ -246,7 +246,7 @@ namespace GodlikeStickCreator.ViewModels
 
             if (UsbStickSettings.Drive.DriveFormat != "FAT32")
                 processView.Logger.Warn(
-                    $"The drive {UsbStickSettings.Drive.RootDirectory.FullName} is {UsbStickSettings.Drive.DriveFormat} formatted which may be incompatible with SysLinux (it is recommended to format it as FAT32)");
+                    $"The drive {UsbStickSettings.Drive.RootDirectory.FullName} is formatted with {UsbStickSettings.Drive.DriveFormat} which may be incompatible with SysLinux (it is recommended to format it as FAT32)");
 
             var bootStickCreator = new BootStickCreator(UsbStickSettings.Drive, UsbStickSettings.SysLinuxAppearance);
             processView.CurrentProgress = 0.05;
@@ -254,6 +254,11 @@ namespace GodlikeStickCreator.ViewModels
             processView.CurrentProgress = 0.1;
 
             var installSystemPercentage = UsbStickSettings.ApplicationInfo.Any(x => x.Add) ? 0.6 : 0.9;
+            var systemSizes = UsbStickSettings.Systems.ToDictionary(x => x, y => new FileInfo(y.Filename).Length);
+            long processedSize = 0;
+            var totalSize = systemSizes.Sum(x => x.Value);
+            bool? skipAllExistingSystems = null;
+
             for (int i = 0; i < UsbStickSettings.Systems.Count; i++)
             {
                 var systemInfo = UsbStickSettings.Systems[i];
@@ -261,9 +266,7 @@ namespace GodlikeStickCreator.ViewModels
                 progressReporter.ProgressChanged +=
                     (sender, d) =>
                         processView.CurrentProgress =
-                            0.1 +
-                            (installSystemPercentage/UsbStickSettings.Systems.Count*i +
-                             installSystemPercentage/UsbStickSettings.Systems.Count*d);
+                            0.1 + (processedSize + systemSizes[systemInfo] * d) / totalSize * installSystemPercentage;
                 progressReporter.MessageChanged +=
                     (sender, s) =>
                     {
@@ -274,22 +277,36 @@ namespace GodlikeStickCreator.ViewModels
 
                 if (bootStickCreator.SysLinuxConfigFile.ContainsSystem(systemInfo))
                 {
-                    var directory = bootStickCreator.SysLinuxConfigFile.GetSystemDirectory(systemInfo);
-                    var newFileName = Path.GetFileNameWithoutExtension(systemInfo.Filename);
+                    if (skipAllExistingSystems == true)
+                        continue;
 
-                    if (directory == newFileName)
+                    if (skipAllExistingSystems == null)
                     {
-                        if (MessageBoxEx.Show(Application.Current.MainWindow,
-                            $"The system \"{systemInfo.Name}\" already exists on the drive. Should it be overwritten (else skip)?",
-                            systemInfo.Name + " already exists", MessageBoxButton.YesNo, MessageBoxImage.Question,
-                            MessageBoxResult.No) != MessageBoxResult.Yes)
-                            continue;
+                        var directory = bootStickCreator.SysLinuxConfigFile.GetSystemDirectory(systemInfo);
+                        var newFileName = Path.GetFileNameWithoutExtension(systemInfo.Filename);
+
+                        if (directory == newFileName)
+                        {
+                            var applyForAll = false;
+                            if (MessageBoxChk.Show(Application.Current.MainWindow,
+                                $"The system \"{systemInfo.Name}\" already exists on the drive. Should it be overwritten (else skip)?",
+                                systemInfo.Name + " already exists", "Apply for all", MessageBoxButton.YesNo,
+                                MessageBoxImage.Question,
+                                MessageBoxResult.No, ref applyForAll) != MessageBoxResult.Yes)
+                            {
+                                if (applyForAll)
+                                    skipAllExistingSystems = true;
+                                continue;
+                            }
+                            if (applyForAll)
+                                skipAllExistingSystems = false;
+                        }
                     }
 
                     await Task.Run(() => bootStickCreator.RemoveSystem(systemInfo));
                 }
 
-                processView.Message = $"Install {systemInfo.Name} ({i + 1} / {UsbStickSettings.Systems.Count})";
+                processView.Message = $"Install {systemInfo.Name} ({i + 1} / {UsbStickSettings.Systems.Count}): Add to config";
 
                 await
                     Task.Run(
@@ -298,6 +315,7 @@ namespace GodlikeStickCreator.ViewModels
                                 progressReporter));
 
                 processView.Logger.Success("Added " + systemInfo.Name);
+                processedSize += systemSizes[systemInfo];
             }
 
             processView.CurrentProgress = 0.7;
@@ -314,8 +332,7 @@ namespace GodlikeStickCreator.ViewModels
                 processView.Logger.Status($"Download {downloadUrl}");
                 var tempFile =
                     FileSystemExtensions.GetFreeTempFileName(application.Extension ??
-                                                       new FileInfo(new Uri(downloadUrl).AbsolutePath).Extension);
-                File.Delete(tempFile);
+                                                       new FileInfo(new Uri(downloadUrl).AbsolutePath).Extension.Remove(0, 1)); //remove the dot of the extension
                 var webClient = new WebClient();
                 webClient.DownloadProgressChanged +=
                     (sender, args) =>

@@ -108,6 +108,9 @@
     <Compile Include="Native\CbtHookAction.cs" />
     <Compile Include="Native\CWPRETSTRUCT.cs" />
     <Compile Include="Native\NativeMethods.cs" />
+    <Compile Include="Native\SHGSI.cs" />
+    <Compile Include="Native\SHSTOCKICONID.cs" />
+    <Compile Include="Native\SHSTOCKICONINFO.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\ColorExtensions.cs" />
@@ -117,6 +120,7 @@
     <Compile Include="Utilities\MessageBoxEx.cs" />
     <Compile Include="Utilities\UsbNotification.cs" />
     <Compile Include="Utilities\User.cs" />
+    <Compile Include="Utilities\WindowUtilities.cs" />
     <Compile Include="Utilities\WpfUtilities.cs" />
     <Compile Include="ViewModelBase\PropertyChangedBase.cs" />
     <Compile Include="ViewModelBase\RelayCommand.cs" />
@@ -138,6 +142,9 @@
     </Compile>
     <Compile Include="Views\ManageWindow.xaml.cs">
       <DependentUpon>ManageWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MessageBoxChk.xaml.cs">
+      <DependentUpon>MessageBoxChk.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ModifyAppearanceView.xaml.cs">
       <DependentUpon>ModifyAppearanceView.xaml</DependentUpon>
@@ -196,6 +203,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ManageWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MessageBoxChk.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -309,6 +320,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Thumbnails\AVGRescueDisk.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -145,6 +145,18 @@ namespace GodlikeStickCreator.Core.System
                     DownloadUrl = "http://www.piotrbania.com/all/kon-boot/",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/KonBoot.png", UriKind.Relative)),
                     IsoFileMatch = new Regex(@"^kon-boot-installer\.exe$")
+                },
+                new SystemInfo
+                {
+                    Name = "AVG Rescue CD",
+                    Description =
+                        "AVG Rescue CD is a powerful must-have toolkit to assist with the rescue and repair of infected machines.",
+                    Category = Category.AntiVirus,
+                    InstallMethod = InstallMethod.Other,
+                    Website = "http://www.avg.com/",
+                    DownloadUrl = "http://www.avg.com/us-en/download-file-cd-arl-iso",
+                    Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/AVGRescueDisk.png", UriKind.Relative)),
+                    IsoFileMatch = new Regex(@"^avg_arl_cdi_all_.+\.iso$")
                 }
             };
         }
