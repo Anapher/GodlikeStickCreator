@@ -206,6 +206,7 @@ namespace GodlikeStickCreator.Core.System
     {
         None,
         SystemRescueDisk,
-        IsoLinuxPrompt0
+        IsoLinuxPrompt0,
+        UbuntuStudio
     }
 }

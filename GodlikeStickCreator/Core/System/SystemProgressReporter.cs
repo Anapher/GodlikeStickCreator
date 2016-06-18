@@ -16,8 +16,8 @@ namespace GodlikeStickCreator.Core.System
         {
             switch (installationStatus)
             {
-                case InstallationStatus.ExtractZipFile:
-                    MessageChanged?.Invoke(this, "Extract zip file");
+                case InstallationStatus.ExtractFile:
+                    MessageChanged?.Invoke(this, "Extract file");
                     break;
                 case InstallationStatus.WriteConfig:
                     MessageChanged?.Invoke(this, "Write config");
@@ -38,7 +38,7 @@ namespace GodlikeStickCreator.Core.System
 
     public enum InstallationStatus
     {
-        ExtractZipFile,
+        ExtractFile,
         WriteConfig,
         CopyFiles
     }

@@ -81,7 +81,8 @@ namespace GodlikeStickCreator.Core.System
                     Website = "https://ubuntustudio.org/",
                     DownloadUrl = "https://ubuntustudio.org/download/",
                     Thumbnail = new BitmapImage(new Uri("/Resources/Thumbnails/UbuntuStudio.png", UriKind.Relative)),
-                    IsoFileMatch = new Regex(@"^ubuntustudio.*\.iso$")
+                    IsoFileMatch = new Regex(@"^ubuntustudio.*\.iso$"),
+                    SpecialSnowflake = SpecialSnowflake.UbuntuStudio
                 },
                 new SystemInfo
                 {

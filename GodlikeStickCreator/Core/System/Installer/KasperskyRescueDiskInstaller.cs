@@ -9,7 +9,7 @@ namespace GodlikeStickCreator.Core.System.Installer
 
         public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out MenuItemInfo menuItem, SystemProgressReporter progressReporter)
         {
-            progressReporter.ReportStatus(InstallationStatus.ExtractZipFile);
+            progressReporter.ReportStatus(InstallationStatus.ExtractFile);
 
             using (var file = new SevenZipExtractor(filename))
             {

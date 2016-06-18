@@ -65,7 +65,7 @@ namespace GodlikeStickCreator.ViewModels
                     DownloadUrl = new Lazy<string>(() => "http://mh-nexus.de/downloads/HxDen.zip"),
                     ApplicationCategory = ApplicationCategory.Editors,
                     Description =
-                        "HxD is a carefully designed and fast hex editor which, additionally to raw disk editing and modifying of main memory (RAM), handles files of any size."
+                        "HxD is a carefully designed and fast hex editor which, additionally to raw disk editing and modifying of main memory (RAM)"
                 },
                 new ApplicationInfo
                 {
@@ -84,52 +84,64 @@ namespace GodlikeStickCreator.ViewModels
                 },
                 new ApplicationInfo
                 {
-                    Name = "7-Zip (console)",
-                    DownloadUrl = new Lazy<string>(Get7ZipDownloadUrl),
+                    Name = "PeaZip",
+                    DownloadUrl =
+                        new Lazy<string>(
+                            () =>
+                                "http://liquidtelecom.dl.sourceforge.net/project/peazip/6.0.2/peazip_portable-6.0.2.WINDOWS.zip"),
                     ApplicationCategory = ApplicationCategory.FileTools,
-                    Description = "7-Zip is a file archiver with a high compression ratio."
+                    Description =
+                        "PeaZip is free file archiver utility, based on Open Source technologies of 7-Zip, p7zip, FreeArc, PAQ, and PEA projects."
                 },
                 new ApplicationInfo
                 {
-                    Name ="PEStudio",
+                    Name = "PEStudio",
                     DownloadUrl = new Lazy<string>(() => "https://www.winitor.com/tools/pestudio/current/pestudio.zip"),
                     ApplicationCategory = ApplicationCategory.FileTools,
-                    Description = "pestudio is a tool that is used in many Cyber Emergency Response Teams (CERT) worldwide in order to perform malware initial assessment."
+                    Description =
+                        "pestudio is a tool that is used in many Cyber Emergency Response Teams worldwide in order to perform malware initial assessment."
                 },
                 new ApplicationInfo
                 {
-                    Name ="CPU-Z",
+                    Name = "CPU-Z",
                     DownloadUrl = new Lazy<string>(() => "http://download.cpuid.com/cpu-z/cpu-z_1.76-en.zip"),
                     ApplicationCategory = ApplicationCategory.InformationTools,
-                    Description = "CPU-Z is a freeware that gathers information on some of the main devices of your system."
+                    Description =
+                        "CPU-Z is a freeware that gathers information on some of the main devices of your system."
                 },
                 new ApplicationInfo
                 {
-                    Name ="LaZagne",
-                    DownloadUrl = new Lazy<string>(() => GetNewestReleaseDownloadUrl("https://github.com/AlessandroZ/LaZagne/releases")),
+                    Name = "LaZagne",
+                    DownloadUrl =
+                        new Lazy<string>(
+                            () => GetNewestReleaseDownloadUrl("https://github.com/AlessandroZ/LaZagne/releases")),
                     ApplicationCategory = ApplicationCategory.InformationTools,
-                    Description = "The LaZagne project is used to retrieve lots of passwords stored on a local computer from about 22 programs."
+                    Description =
+                        "The LaZagne project is used to retrieve lots of passwords stored on a local computer from about 22 programs."
                 },
                 new ApplicationInfo
                 {
-                    Name ="NotMyFault",
+                    Name = "NotMyFault",
                     DownloadUrl = new Lazy<string>(() => "https://live.sysinternals.com/files/NotMyFault.zip"),
                     ApplicationCategory = ApplicationCategory.InformationTools,
-                    Description = "The NotMyFault tool is a great way to crash Windows systems in a controlled manner to test various tools and analyze crashes."
+                    Description =
+                        "The NotMyFault tool is a great way to crash Windows systems in a controlled manner to test various tools and analyze crashes."
                 },
                 new ApplicationInfo
                 {
-                    Name ="Prime95 32 Bit",
+                    Name = "Prime95 32 Bit",
                     DownloadUrl = new Lazy<string>(() => "http://www.mersenne.org/ftp_root/gimps/p95v289.win32.zip"),
                     ApplicationCategory = ApplicationCategory.InformationTools,
-                    Description = "Prime95 is a small and easy to use application that allows you to find Mersenne Prime numbers designed for overclockers."
+                    Description =
+                        "Prime95 is a small and easy to use application that allows you to find Mersenne Prime numbers designed for overclockers."
                 },
                 new ApplicationInfo
                 {
-                    Name ="Prime95 64 Bit",
+                    Name = "Prime95 64 Bit",
                     DownloadUrl = new Lazy<string>(() => "http://www.mersenne.org/ftp_root/gimps/p95v289.win64.zip"),
                     ApplicationCategory = ApplicationCategory.InformationTools,
-                    Description = "Prime95 is a small and easy to use application that allows you to find Mersenne Prime numbers designed for overclockers."
+                    Description =
+                        "Prime95 is a small and easy to use application that allows you to find Mersenne Prime numbers designed for overclockers."
                 },
                 new ApplicationInfo
                 {
@@ -137,7 +149,8 @@ namespace GodlikeStickCreator.ViewModels
                     DownloadUrl = new Lazy<string>(() => "http://www.alcpu.com/CoreTemp/php/download.php?id=2"),
                     ApplicationCategory = ApplicationCategory.InformationTools,
                     Extension = "zip",
-                    Description = "Core Temp is a compact, no fuss, small footprint, yet powerful program to monitor processor temperature and other vital information."
+                    Description =
+                        "Core Temp is a compact, no fuss, small footprint, yet powerful program to monitor processor temperature and other vital information."
                 },
                 new ApplicationInfo
                 {
@@ -145,20 +158,26 @@ namespace GodlikeStickCreator.ViewModels
                     DownloadUrl = new Lazy<string>(() => "http://www.alcpu.com/CoreTemp/php/download.php?id=3"),
                     ApplicationCategory = ApplicationCategory.InformationTools,
                     Extension = "zip",
-                    Description = "Core Temp is a compact, no fuss, small footprint, yet powerful program to monitor processor temperature and other vital information."
+                    Description =
+                        "Core Temp is a compact, no fuss, small footprint, yet powerful program to monitor processor temperature and other vital information."
                 },
                 new ApplicationInfo
                 {
                     Name = "ImgBurn",
-                    DownloadUrl = new Lazy<string>(() => "http://filessjc01.dddload.net/static/Portable_ImgBurn_2.5.8.0.exe"),
+                    DownloadUrl =
+                        new Lazy<string>(() => "http://filessjc01.dddload.net/static/Portable_ImgBurn_2.5.8.0.exe"),
                     ApplicationCategory = ApplicationCategory.InformationTools,
                     Extension = "7z",
-                    Description = "ImgBurn is a lightweight CD / DVD / HD DVD / Blu-ray burning application that everyone should have in their toolkit!"
+                    Description =
+                        "ImgBurn is a lightweight CD / DVD / HD DVD / Blu-ray burning application that everyone should have in their toolkit!"
                 },
                 new ApplicationInfo
                 {
                     Name = "FileZilla",
-                    DownloadUrl = new Lazy<string>(() => "http://vorboss.dl.sourceforge.net/project/filezilla/FileZilla_Client/3.18.0/FileZilla_3.18.0_win32.zip"),
+                    DownloadUrl =
+                        new Lazy<string>(
+                            () =>
+                                "http://vorboss.dl.sourceforge.net/project/filezilla/FileZilla_Client/3.18.0/FileZilla_3.18.0_win32.zip"),
                     ApplicationCategory = ApplicationCategory.Network,
                     Description = "FileZilla is a cross-platform graphical FTP, SFTP, and FTPS file management tool."
                 },
@@ -181,18 +200,23 @@ namespace GodlikeStickCreator.ViewModels
                     Name = "PsTools",
                     DownloadUrl = new Lazy<string>(() => "https://download.sysinternals.com/files/PSTools.zip"),
                     ApplicationCategory = ApplicationCategory.SystemTools,
-                    Description = "he PsTools suite includes command-line utilities that help you administer your Windows NT/2K systems."
+                    Description =
+                        "he PsTools suite includes command-line utilities that help you administer your Windows NT/2K systems."
                 },
                 new ApplicationInfo
                 {
                     Name = "SharpDevelop",
-                    DownloadUrl = new Lazy<string>(() => "http://netix.dl.sourceforge.net/project/sharpdevelop/SharpDevelop%205.x/5.1/SharpDevelop_5.1.0.5216_Xcopyable.zip"),
+                    DownloadUrl =
+                        new Lazy<string>(
+                            () =>
+                                "http://netix.dl.sourceforge.net/project/sharpdevelop/SharpDevelop%205.x/5.1/SharpDevelop_5.1.0.5216_Xcopyable.zip"),
                     ApplicationCategory = ApplicationCategory.Editors,
-                    Description = "#develop (short for SharpDevelop) is a free IDE for C# projects on Microsoft's .NET platform"
+                    Description =
+                        "#develop (short for SharpDevelop) is a free IDE for C# projects on Microsoft's .NET platform"
                 }
             }.OrderBy(x => x.Name));
-            foreach (var applicationInfo in Applications)
-                applicationInfo.Add = true;
+            foreach (var application in Applications)
+                application.Add = true;
 
             CanGoForward = true;
             UsbStickSettings.ApplicationInfo = Applications;
@@ -249,7 +273,7 @@ namespace GodlikeStickCreator.ViewModels
             return "https://notepad-plus-plus.org" +
                    Regex.Match(source, @"<a href=""(?<url>(.*?))"">Notepad\+\+ zip package").Groups["url"].Value;
         }
-
+        /*
         private static string Get7ZipDownloadUrl()
         {
             var source = new WebClient().DownloadString("http://www.7-zip.org/download.html");
@@ -257,7 +281,7 @@ namespace GodlikeStickCreator.ViewModels
                    Regex.Match(source, @"<A href=""(?<url>(.*?))-extra\.7z"">Download<\/A>").Groups["url"].Value +
                    "-extra.7z";
         }
-
+        */
         private static string GetWinSCPDownloadUrl()
         {
             using (var webClient = new WebClient())
