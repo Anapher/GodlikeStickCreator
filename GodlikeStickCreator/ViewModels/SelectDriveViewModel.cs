@@ -119,7 +119,8 @@ namespace GodlikeStickCreator.ViewModels
                         new ObservableCollection<DriveInfo>(value
                             ? DriveInfo.GetDrives().Where(x => x.IsReady)
                             : DriveInfo.GetDrives().Where(x => x.IsReady && x.DriveType == DriveType.Removable));
-                    SelectedDrive = Drives.FirstOrDefault(x => x.Name == currentItem.Name);
+                    if (currentItem != null)
+                        SelectedDrive = Drives.FirstOrDefault(x => x.Name == currentItem.Name);
                 }
             }
         }
