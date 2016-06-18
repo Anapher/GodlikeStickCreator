@@ -11,7 +11,7 @@ namespace GodlikeStickCreator.Core.System.Installer
         public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out MenuItemInfo menuItem, SystemProgressReporter progressReporter)
         {
             FileInfo memtestFile = null;
-            progressReporter.ReportStatus(InstallationStatus.ExtractZipFile);
+            progressReporter.ReportStatus(InstallationStatus.ExtractFile);
             using (var fileStream = File.OpenRead(filename))
             {
                 var zipFile = new ZipFile(fileStream);

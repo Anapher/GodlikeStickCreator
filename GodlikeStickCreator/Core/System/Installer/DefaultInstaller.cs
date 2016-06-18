@@ -12,7 +12,7 @@ namespace GodlikeStickCreator.Core.System.Installer
 
         public override void Install(DirectoryInfo systemDirectory, string systemName, SpecialSnowflake specialSnowflake, string filename, out MenuItemInfo menuItem, SystemProgressReporter progressReporter)
         {
-            progressReporter.ReportStatus(InstallationStatus.ExtractZipFile);
+            progressReporter.ReportStatus(InstallationStatus.ExtractFile);
 
             using (var file = new SevenZipExtractor(filename))
             {
@@ -311,10 +311,14 @@ APPEND /multiboot/{systemDirectory.Name}/{configInfo.ConfigPath}");
                     var content = File.ReadAllText(isoLinuxFile.FullName);
                     File.WriteAllText(isoLinuxFile.FullName, content.Replace("PROMPT 1", "PROMPT 0", StringComparison.OrdinalIgnoreCase));
                     break;
+                case SpecialSnowflake.UbuntuStudio:
+                    ReplaceStringInFile(Path.Combine(systemDirectory.FullName, "isolinux", "isolinux.cfg"),
+                        new Dictionary<string, string>
+                        {
+                            {"ui gfxboot bootlogo", "#ui gfxboot bootlogo"}
+                        });
+                    break;
             }
-
-            // Enable Casper
-            //if(File.Exists(Path.Combine(systemDirectory.FullName, "casper", "filesystem.squashfs")) && F)
         }
     }
 }

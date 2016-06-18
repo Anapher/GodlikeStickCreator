@@ -19,7 +19,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ListView listViewLayoutManager:ListViewLayoutManager.Enabled="true"
-                  BorderThickness="0,0,0,1"
+                  BorderThickness="0,1,0,1"
                   ItemsSource="{Binding Systems}">
             <ListView.View>
                 <GridView>
