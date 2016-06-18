@@ -213,6 +213,15 @@ namespace GodlikeStickCreator.ViewModels
                     ApplicationCategory = ApplicationCategory.Editors,
                     Description =
                         "#develop (short for SharpDevelop) is a free IDE for C# projects on Microsoft's .NET platform"
+                },
+                new ApplicationInfo
+                {
+                    Name = "TrueCrypt 7.1a",
+                    DownloadUrl =
+                        new Lazy<string>(GetTrueCryptUrl),
+                    ApplicationCategory = ApplicationCategory.FileTools,
+                    Description =
+                        "TrueCrypt creates encrypted volumes on your computer, or encrypts entire disks - including your system disk"
                 }
             }.OrderBy(x => x.Name));
             foreach (var application in Applications)
@@ -293,6 +302,12 @@ namespace GodlikeStickCreator.ViewModels
                                                  "downloadUrl"].Value + ".zip");
                 return Regex.Match(source, @"href='(?<url>(.*?))'>\[Direct download\]<\/a>").Groups["url"].Value;
             }
+        }
+
+        private static string GetTrueCryptUrl()
+        {
+            var source = new WebClient().DownloadString("http://www.heise.de/download/product/truecrypt-25104/download/danke?id=25104-5");
+            return Regex.Match(source, @"<a href=""(?<url>(.*?))truecrypt\.zip""").Groups["url"].Value + "truecrypt.zip";
         }
     }
 }
