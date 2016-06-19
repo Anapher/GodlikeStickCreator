@@ -166,7 +166,7 @@ namespace GodlikeStickCreator.ViewModels
                     Name = "ImgBurn",
                     DownloadUrl =
                         new Lazy<string>(() => "http://filessjc01.dddload.net/static/Portable_ImgBurn_2.5.8.0.exe"),
-                    ApplicationCategory = ApplicationCategory.InformationTools,
+                    ApplicationCategory = ApplicationCategory.Multimedia,
                     Extension = "7z",
                     Description =
                         "ImgBurn is a lightweight CD / DVD / HD DVD / Blu-ray burning application that everyone should have in their toolkit!"
@@ -201,7 +201,7 @@ namespace GodlikeStickCreator.ViewModels
                     DownloadUrl = new Lazy<string>(() => "https://download.sysinternals.com/files/PSTools.zip"),
                     ApplicationCategory = ApplicationCategory.SystemTools,
                     Description =
-                        "he PsTools suite includes command-line utilities that help you administer your Windows NT/2K systems."
+                        "The PsTools suite includes command-line utilities that help you administer your Windows NT/2K systems."
                 },
                 new ApplicationInfo
                 {
@@ -222,6 +222,15 @@ namespace GodlikeStickCreator.ViewModels
                     ApplicationCategory = ApplicationCategory.FileTools,
                     Description =
                         "TrueCrypt creates encrypted volumes on your computer, or encrypts entire disks - including your system disk"
+                },
+                new ApplicationInfo
+                {
+                    Name = "Process Monitor",
+                    DownloadUrl =
+                        new Lazy<string>(() => "https://download.sysinternals.com/files/ProcessMonitor.zip"),
+                    ApplicationCategory = ApplicationCategory.SystemTools,
+                    Description =
+                        "Process Monitor is an advanced monitoring tool for Windows that shows real-time file system, Registry and process/thread activity"
                 }
             }.OrderBy(x => x.Name));
             foreach (var application in Applications)
