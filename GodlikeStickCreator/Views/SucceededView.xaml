@@ -21,9 +21,6 @@
                             <DataTrigger Binding="{Binding InstalledSystems.Count}" Value="1">
                                 <Setter Property="Text" Value="{Binding InstalledSystems[9].Name, Mode=OneWay}" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding InstalledSystems.Count}" Value="0">
-                                <Setter Property="Text" Value="" />
-                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Run.Style>
@@ -34,9 +31,6 @@
                         <Setter Property="Text" Value="systems" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding InstalledSystems.Count}" Value="1">
-                                <Setter Property="Text" Value="" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding InstalledSystems.Count}" Value="0">
                                 <Setter Property="Text" Value="" />
                             </DataTrigger>
                         </Style.Triggers>
