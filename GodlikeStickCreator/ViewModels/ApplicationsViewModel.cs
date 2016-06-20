@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using GodlikeStickCreator.Core;
 using GodlikeStickCreator.Core.Applications;
+using GodlikeStickCreator.Utilities;
 using GodlikeStickCreator.ViewModelBase;
 
 namespace GodlikeStickCreator.ViewModels
@@ -13,6 +15,7 @@ namespace GodlikeStickCreator.ViewModels
     {
         private RelayCommand _deselectAllCommand;
         private RelayCommand _selectAllCommand;
+        private RelayCommand _selectMissingCommand;
 
         public ApplicationsViewModel(UsbStickSettings usbStickSettings) : base(usbStickSettings)
         {
@@ -231,6 +234,15 @@ namespace GodlikeStickCreator.ViewModels
                     ApplicationCategory = ApplicationCategory.SystemTools,
                     Description =
                         "Process Monitor is an advanced monitoring tool for Windows that shows real-time file system, Registry and process/thread activity"
+                },
+                new ApplicationInfo
+                {
+                    Name = "Sysinternals Suite",
+                    DownloadUrl =
+                        new Lazy<string>(() => "https://download.sysinternals.com/files/SysinternalsSuite.zip"),
+                    ApplicationCategory = ApplicationCategory.SystemTools,
+                    Description =
+                        "This suite contains all Sysinternals Troubleshooting Utilities (Process Explorer, Autoruns, PsTools, ...)"
                 }
             }.OrderBy(x => x.Name));
             foreach (var application in Applications)
@@ -266,6 +278,20 @@ namespace GodlikeStickCreator.ViewModels
             }
         }
 
+        public RelayCommand SelectMissingCommand
+        {
+            get
+            {
+                return _selectMissingCommand ?? (_selectMissingCommand = new RelayCommand(parameter =>
+                {
+                    foreach (var application in Applications)
+                        application.Add =
+                            !Directory.Exists(Path.Combine(UsbStickSettings.Drive.RootDirectory.FullName, "Tools",
+                                EnumUtilities.GetDescription(application.ApplicationCategory), application.Name));
+                }));
+            }
+        }
+
         private static string GetNewestReleaseDownloadUrl(string githubReleaseUrl)
         {
             var websiteSource = new WebClient().DownloadString(githubReleaseUrl);
@@ -291,6 +317,7 @@ namespace GodlikeStickCreator.ViewModels
             return "https://notepad-plus-plus.org" +
                    Regex.Match(source, @"<a href=""(?<url>(.*?))"">Notepad\+\+ zip package").Groups["url"].Value;
         }
+
         /*
         private static string Get7ZipDownloadUrl()
         {
@@ -300,6 +327,7 @@ namespace GodlikeStickCreator.ViewModels
                    "-extra.7z";
         }
         */
+
         private static string GetWinSCPDownloadUrl()
         {
             using (var webClient = new WebClient())
@@ -315,7 +343,9 @@ namespace GodlikeStickCreator.ViewModels
 
         private static string GetTrueCryptUrl()
         {
-            var source = new WebClient().DownloadString("http://www.heise.de/download/product/truecrypt-25104/download/danke?id=25104-5");
+            var source =
+                new WebClient().DownloadString(
+                    "http://www.heise.de/download/product/truecrypt-25104/download/danke?id=25104-5");
             return Regex.Match(source, @"<a href=""(?<url>(.*?))truecrypt\.zip""").Groups["url"].Value + "truecrypt.zip";
         }
     }
