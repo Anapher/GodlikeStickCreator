@@ -12,7 +12,7 @@ Just start the program, select the drive you want to use, download the systems y
 - **DONT** change the volume label of the drive because some systems will fail to boot then
 - **DONT** change any configuration files on the usb drive if you aren't 100 % sure what you're doing
 - **DONT** blame me if something goes wrong. You're using this tool at your own risk
-- **DO** help people with the power of your knowledge and the tools of your stick
+- **DO** help people with the power of your knowledge and the tools of your usb-stick
 
 
 # License
